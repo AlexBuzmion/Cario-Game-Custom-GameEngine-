@@ -32,10 +32,10 @@ protected:
 	bool mIsStatic; 
 	bool mHasGravity; 
 	exVector2 mVelocity; // stores vector and speed 
+	bool mIsGrounded = false;
 
 private:
 	const float mGravityConstant = 9.8f;
-	bool mIsGrounded = false;
 	std::vector<OnCollisionEvent> mCollisionEvents; // stores all registered collision events
 };
 

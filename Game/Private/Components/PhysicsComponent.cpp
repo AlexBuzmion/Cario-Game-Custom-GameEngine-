@@ -55,7 +55,7 @@ void PhysicsComponent::Move()
 	if (std::shared_ptr<TransformComponent> transformComponent = owner->FindComponentOfType<TransformComponent>()) {
 		exVector2 currentPos = transformComponent->GetPosition();
 
-		if (mHasGravity) {
+		if (mHasGravity && !mIsGrounded) {
 			mVelocity.y += mGravityConstant;
 		}
 		exVector2 newPosition = currentPos + mVelocity;

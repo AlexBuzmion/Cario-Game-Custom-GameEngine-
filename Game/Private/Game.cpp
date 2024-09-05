@@ -54,7 +54,7 @@ void Cario::Initialize(exEngineInterface* pEngine)
 	mTextPosition.x = 50.0f;
 	mTextPosition.y = 50.0f;
 
-	mBall = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,400.0f }, 25.0f, exColor{ 180, 10, 10,255 }, false);
+	mBall = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,400.0f }, 25.0f, exColor{ 180, 10, 10,255 }, true);
 	mBall->BeginPlay();
 
 	//exVector2 inSpawnLoc, exColor inColor, bool inHasGravity, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2
@@ -155,51 +155,41 @@ void Cario::Run(float fDeltaT)
 	c.mColor[2] = 0;
 	c.mColor[3] = 255;
 	
-	// updating text position based on input flags
+	// for powerup implementation later on. 
 	if (mInputManager.GetState().IsAttack())
 	{
 		
 	}
 
-	if (mInputManager.GetState().IsJump() )
+	if (mInputManager.GetState().IsJumpPressed() && mBall->IsGrounded())
 	{
 		// Mark the ball as no longer grounded
 		mBall->SetGrounded(false);
 
-
 		// Set an upward velocity to initiate the jump
 		accumulatedVelocity.y = -mBall->GetJumpHeight(); // Negative to move upward in most 2D coordinate systems
-		
-
 	}
 
-	if (mInputManager.GetState().IsDuck())
+	if (mInputManager.GetState().IsDownPressed())
 	{
 		accumulatedVelocity.y += 8;
 	}
 
-	if (mInputManager.GetState().IsForward())
+	if (mInputManager.GetState().IsForwardPressed())
 	{
 		accumulatedVelocity.x += 4;
 	}
 
-	if (mInputManager.GetState().IsBack())
+	if (mInputManager.GetState().IsBackwardPressed())
 	{
 		accumulatedVelocity.x -= 4;
 	}
 
+	if (mBall->IsGrounded()) 
+	{
+		accumulatedVelocity.y = 0;
+	}
 	charPhysics->SetVelocity(accumulatedVelocity); // Apply all velocity accumulated here
-
-	if (mInputManager.GetState().IsUse())
-	{
-		mEngine->DrawText(mFontID, exVector2(10, 185), "Use", c, 0);
-	}
-
-	if (mInputManager.GetState().IsCancel())
-	{
-		mEngine->DrawText(mFontID, exVector2(10, 220), "Cancel", c, 0);
-	}
-
 
 	//mEngine->DrawText(mFontID, mTextPosition, "Super", c, 0); // rendering the text with the font and position
 	//mEngine->DrawText(mFontID, (mTextPosition + exVector2 {0.0f, 30.0f}), "Cario", c, 0); // rendering the text with the font and position

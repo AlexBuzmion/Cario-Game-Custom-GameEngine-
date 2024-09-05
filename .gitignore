@@ -37,8 +37,6 @@ ipch/
 # IDE Specific files
 # Visual Studio
 .vs/
-*.vcxproj*
-*.vcproj*
 *.sln
 *.suo
 *.user
@@ -88,3 +86,11 @@ node_modules/
 
 # Git itself
 .gitignore
+
+# Ignore intermediate build files and logs
+OutGame/*.tlog
+OutGame/*.recipe
+OutGame/*.idb
+OutGame/*.lastbuildstate
+OutGame/*.exe
+OutGame/*.pdb

@@ -1,16 +1,16 @@
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Components\PhysicsComponents\BoxColliderComponent.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\BoxColliderComponent.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\GameObjects\Cube.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\Cube.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Components\RenderComponents\BoxRenderComponent.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\BoxRenderComponent.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Components\PhysicsComponents\CircleColliderComponent.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\CircleColliderComponent.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\GameObjects\Ball.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\Ball.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Components\RenderComponents\CircleRenderComponent.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\CircleRenderComponent.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Component.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\Component.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Components\TransformComponent.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\TransformComponent.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Game.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\Game.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\GameObject.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\GameObject.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Main.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\Main.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Components\RenderComponent.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\RenderComponent.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Singletons\RenderEngine.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\RenderEngine.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Components\PhysicsComponent.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\PhysicsComponent.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Singletons\PhysicsEngine.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\PhysicsEngine.obj
-C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\Game\Private\Singletons\InputManager.cpp;C:\Users\alexb\Desktop\Repos\C++ Learning\EngineXForStudent\OutGame\InputManager.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Components\PhysicsComponents\BoxColliderComponent.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\BoxColliderComponent.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\GameObjects\Cube.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\Cube.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Components\RenderComponents\BoxRenderComponent.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\BoxRenderComponent.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Components\PhysicsComponents\CircleColliderComponent.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\CircleColliderComponent.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\GameObjects\Ball.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\Ball.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Components\RenderComponents\CircleRenderComponent.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\CircleRenderComponent.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Component.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\Component.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Components\TransformComponent.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\TransformComponent.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Game.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\Game.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\GameObject.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\GameObject.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Main.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\Main.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Components\RenderComponent.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\RenderComponent.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Singletons\RenderEngine.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\RenderEngine.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Components\PhysicsComponent.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\PhysicsComponent.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Singletons\PhysicsEngine.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\PhysicsEngine.obj
+C:\Users\alexb\Desktop\Repos\SuperCario\Game\Private\Singletons\InputManager.cpp;C:\Users\alexb\Desktop\Repos\SuperCario\OutGame\InputManager.obj

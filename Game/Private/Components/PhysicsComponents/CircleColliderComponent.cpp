@@ -61,7 +61,6 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 		if (mOwner.expired() || otherBoxCollider->GetOwner().expired()) {
 			return false;
 		}
-
 		std::shared_ptr<TransformComponent> ownerTransformComp = mOwner.lock()->FindComponentOfType<TransformComponent>();
 		std::shared_ptr<TransformComponent> otherTransformComp = otherBoxCollider->GetOwner().lock()->FindComponentOfType<TransformComponent>();
 
@@ -86,7 +85,9 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 			if (circleCenter.x < boxX) testX = boxX;  // Closest to the left edge
 			else if (circleCenter.x > boxX + boxWidth) testX = boxX + boxWidth;  // Closest to the right edge
 
-			if (circleCenter.y < boxY) testY = boxY;  // Closest to the top edge
+			if (circleCenter.y < boxY) {
+				testY = boxY;
+			}  // Closest to the top edge
 			else if (circleCenter.y > boxY + boxHeight) testY = boxY + boxHeight;  // Closest to the bottom edge
 
 			// Calculate the distance between the circle's center and the closest point
@@ -96,7 +97,24 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 
 			// Check if the distance is less than or equal to the circle's radius
 			if (distance <= mRadius) {
-				// Circle collided with the box!
+				
+				// stop downward movement by marking IsGrounded to true
+				if (testY == boxY) {
+					SetIsGrounded(true);
+
+					std::shared_ptr<PhysicsComponent> physicsComponent = mOwner.lock()->FindComponentOfType<PhysicsComponent>();
+					// Only stop downward movement if the character is falling (velocity.y > 0)
+					if (physicsComponent && physicsComponent->GetVelocity().y > 0) {
+						exVector2 velocity = physicsComponent->GetVelocity();
+						velocity.y = 0; // Stop the downward velocity
+						physicsComponent->SetVelocity(velocity);
+					}
+
+					// Correct the position of the circle to sit exactly on top of the box
+					circleCenter.y = boxY - mRadius;  // Ensure the circle rests on the top of the box
+					ownerTransformComp->SetPosition(circleCenter); // Update the position to the corrected one
+				}
+
 				ENGINE_PRINT("Circle Collided with Box", 40.0f, 50.0f);
 				return true;
 			}
