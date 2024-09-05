@@ -111,7 +111,7 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 			float distance = std::sqrt((distX * distX) + (distY * distY));
 
 			// Check if the distance is less than or equal to the circle's radius
-
+			if (distance <= mRadius) {
 				// stop downward movement by marking IsGrounded to true
 				if (testY == boxY) {
 
@@ -133,6 +133,7 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 
 				ENGINE_PRINT("Circle Collided with Box", 40.0f, 50.0f);
 				return true;
+			}
 			
 		}
 	}

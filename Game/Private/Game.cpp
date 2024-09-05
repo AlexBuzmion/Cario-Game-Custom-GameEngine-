@@ -140,6 +140,7 @@ void Cario::OnEventsConsumed()
 
 void Cario::Run(float fDeltaT)
 {
+	mBall->Tick(fDeltaT);
 	// store all of the characters components for easy access later on 
 	std::shared_ptr<TransformComponent> charTransform = mBall->FindComponentOfType<TransformComponent>(); 
 	std::shared_ptr<CircleColliderComponent> charPhysics = mBall->FindComponentOfType<CircleColliderComponent>();
@@ -168,22 +169,22 @@ void Cario::Run(float fDeltaT)
 
 	if (mInputManager.GetState().IsDownPressed())
 	{
-		accumulatedVelocity.y += 8;
+		
 	}
 
-	if (mInputManager.GetState().IsForwardPressed())
-	{
-		mBall->MoveDirection(4.0f);
+	if (mInputManager.GetState().IsForwardPressed()) {
+		mBall->MoveDirection(4.0f);  // Move right
+	}
+	else if (mInputManager.GetState().IsBackwardPressed()) {
+		mBall->MoveDirection(-4.0f);  // Move left
+	}
+	else {
+		mBall->MoveDirection(0.0f);  // No input, stop movement
 	}
 
-	if (mInputManager.GetState().IsBackwardPressed())
+	if (mBall->IsGrounded())
 	{
-		mBall->MoveDirection(-4.0f);
-	}
-
-	if (mBall->IsGrounded()) 
-	{
-		accumulatedVelocity.y = 0;
+		charPhysics->SetVelocity({ charPhysics->GetVelocity().x, 0});
 	}
 	//charPhysics->SetVelocity(accumulatedVelocity); // Apply all velocity accumulated here
 

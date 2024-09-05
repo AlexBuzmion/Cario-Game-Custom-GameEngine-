@@ -1,5 +1,6 @@
 #include "Game/Public/Components/PhysicsComponent.h"
 #include "Game/Public/GameObject.h"
+#include "Game/Public/GameObjects/Ball.h"
 #include "Game/Public/Singletons/PhysicsEngine.h"
 #include <cassert>
 
@@ -57,11 +58,12 @@ void PhysicsComponent::Move()
 	if (mOwner.expired()) return; 
 
 	std::shared_ptr<GameObject> owner = mOwner.lock();
+	
 	if (std::shared_ptr<TransformComponent> transformComponent = owner->FindComponentOfType<TransformComponent>()) {
 		exVector2 currentPos = transformComponent->GetPosition();
 
 		if (mHasGravity) {
-			mVelocity.y += mGravityConstant;
+			mVelocity.y = mVelocity.y + mGravityConstant;
 		}
 		exVector2 newPosition = currentPos + mVelocity;
 		transformComponent->SetPosition(newPosition);

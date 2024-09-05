@@ -36,12 +36,12 @@ void Ball::Tick(float deltaTime)
 {
 	GameObject::Tick(deltaTime);
 	mIsGrounded = mPhysicsComponent->GetIsGrounded();
+	
 }
 
 void Ball::BeginPlay()
 {
 	GameObject::BeginPlay();
-	mIsGrounded = false;
 	mTransform = AddComponentOfType<TransformComponent>(mSpawnLocation);
 	mCircleRenderComponent = AddComponentOfType<CircleRenderComponent>(mColliderRadius, mColor, 2);
 	// constructor parameters taken: bool inIsStatic, float inRadius, bool inHasGravity, exVector2 inVelocity
@@ -75,11 +75,10 @@ void Ball::SetJumpHeight(const float& inNewJumpHeight)
 
 void Ball::Jump()
 {
-	exVector2 currentVelocity = mPhysicsComponent->GetVelocity();
-	exVector2 targetHeight = { currentVelocity.x, currentVelocity.y + mJumpHeight };
 	if (!mIsGrounded) return; 
-		mIsJumping = true;
-		mPhysicsComponent->SetVelocity(targetHeight);
+	mIsJumping = true;
+	mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, -mJumpHeight }); // Apply jump force
+	mIsGrounded = false;
 }
 
 void Ball::MoveDirection(float directionX)

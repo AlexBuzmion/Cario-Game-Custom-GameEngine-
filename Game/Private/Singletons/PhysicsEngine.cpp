@@ -63,9 +63,12 @@ void PhysicsEngine::Collide()
 			if (!otherComponent) continue;
 
 			if (currentComponent->IsColliding(otherComponent)) {
+				// Check if the current object is grounded by checking for floor-like collisions
+
+				// Apply collision response logic for walls, etc.
 				float owningX = -1.0f * currentComponent->mVelocity.x;
 				float owningY = -1.0f * currentComponent->mVelocity.y;
-				exVector2 newPos1 = exVector2{ owningX,owningY };
+				exVector2 newPos1 = exVector2{ owningX, owningY };
 
 				float otherX = otherComponent->mVelocity.x;
 				float otherY = otherComponent->mVelocity.y;

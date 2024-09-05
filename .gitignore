@@ -39,7 +39,7 @@ ipch/
 .vs/
 *.vcxproj*
 *.vcproj*
-*.sln
+
 *.suo
 *.user
 *.rsuser
@@ -98,3 +98,13 @@ OutGame/*.idb
 OutGame/*.lastbuildstate
 OutGame/*.exe
 OutGame/*.pdb
+3rdParty/SDL/SDL2_gfx-1.0.1/SDL2_gfx.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/external/freetype-2.4.12/builds/win32/vc2005/freetype.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/external/freetype-2.4.12/builds/win32/vc2008/freetype.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/external/freetype-2.4.12/builds/win32/vc2010/freetype.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/external/freetype-2.4.12/builds/win32/visualc/freetype.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/external/freetype-2.4.12/builds/wince/vc2005-ce/freetype.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/external/freetype-2.4.12/builds/wince/vc2008-ce/freetype.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/VisualC/SDL_ttf_VS2008.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/VisualC/SDL_ttf_VS2010.sln
+3rdParty/SDL/SDL2_ttf-2.0.12/VisualC/SDL_ttf_VS2012.sln
