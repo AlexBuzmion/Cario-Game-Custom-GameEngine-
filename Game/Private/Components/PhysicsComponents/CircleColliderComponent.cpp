@@ -2,25 +2,35 @@
 #include "Game/Public/GameObject.h"
 #include <cmath>
 #include <algorithm>
+#include "Game/Public/GameObjects/Ball.h"
 
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner) : PhysicsComponent(inOwner)
 {
 	mRadius = 15.0f;
+	mIsGrounded = false;
 }
 
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic) : PhysicsComponent(inOwner, inIsStatic)
 {
 	mRadius = 15.0f;
+	mIsGrounded = false;
 }
 
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, float inRadius) : PhysicsComponent(inOwner, inIsStatic)
 {
 	mRadius = inRadius;
+	mIsGrounded = false;
 }
 
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, float inRadius, bool inHasGravity, exVector2 inVelocity) : PhysicsComponent(inOwner, inIsStatic, inHasGravity, inVelocity)
 {
 	mRadius = inRadius;
+	mIsGrounded = false;
+}
+
+bool CircleColliderComponent::GetIsGrounded()
+{
+	return mIsGrounded;
 }
 
 void CircleColliderComponent::InitializeComponent()
@@ -63,6 +73,7 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 		}
 		std::shared_ptr<TransformComponent> ownerTransformComp = mOwner.lock()->FindComponentOfType<TransformComponent>();
 		std::shared_ptr<TransformComponent> otherTransformComp = otherBoxCollider->GetOwner().lock()->FindComponentOfType<TransformComponent>();
+		std::shared_ptr<PhysicsComponent> ownerPhysicsComp = mOwner.lock()->FindComponentOfType<PhysicsComponent>();
 
 		if (ownerTransformComp && otherTransformComp) {
 			// Get the center point of the circle and the box
@@ -82,13 +93,17 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 			float testY = circleCenter.y;
 
 			// Find the closest point on the box to the circle's center
-			if (circleCenter.x < boxX) testX = boxX;  // Closest to the left edge
-			else if (circleCenter.x > boxX + boxWidth) testX = boxX + boxWidth;  // Closest to the right edge
+			// Closest to the left edge
+			if (circleCenter.x < boxX) testX = boxX;  
+			// Closest to the right edge
+			else if (circleCenter.x > boxX + boxWidth) testX = boxX + boxWidth;  
 
+			// Closest to the top edge
 			if (circleCenter.y < boxY) {
 				testY = boxY;
-			}  // Closest to the top edge
-			else if (circleCenter.y > boxY + boxHeight) testY = boxY + boxHeight;  // Closest to the bottom edge
+			}  
+			// Closest to the bottom edge 
+			else if (circleCenter.y > boxY + boxHeight) testY = boxY + boxHeight;  
 
 			// Calculate the distance between the circle's center and the closest point
 			float distX = circleCenter.x - testX;
@@ -96,30 +111,32 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 			float distance = std::sqrt((distX * distX) + (distY * distY));
 
 			// Check if the distance is less than or equal to the circle's radius
-			if (distance <= mRadius) {
-				
+
 				// stop downward movement by marking IsGrounded to true
 				if (testY == boxY) {
-					SetIsGrounded(true);
 
-					std::shared_ptr<PhysicsComponent> physicsComponent = mOwner.lock()->FindComponentOfType<PhysicsComponent>();
+					mIsGrounded = true;
 					// Only stop downward movement if the character is falling (velocity.y > 0)
-					if (physicsComponent && physicsComponent->GetVelocity().y > 0) {
-						exVector2 velocity = physicsComponent->GetVelocity();
+					if (ownerPhysicsComp && ownerPhysicsComp->GetVelocity().y > 0) {
+						exVector2 velocity = ownerPhysicsComp->GetVelocity();
 						velocity.y = 0; // Stop the downward velocity
-						physicsComponent->SetVelocity(velocity);
+						ownerPhysicsComp->SetVelocity(velocity);
 					}
 
 					// Correct the position of the circle to sit exactly on top of the box
 					circleCenter.y = boxY - mRadius;  // Ensure the circle rests on the top of the box
 					ownerTransformComp->SetPosition(circleCenter); // Update the position to the corrected one
 				}
+				else {
+					mIsGrounded = false;
+				}
 
 				ENGINE_PRINT("Circle Collided with Box", 40.0f, 50.0f);
 				return true;
-			}
+			
 		}
 	}
+
 	return false;
 }
 

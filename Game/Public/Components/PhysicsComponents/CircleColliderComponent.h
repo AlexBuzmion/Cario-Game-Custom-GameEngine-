@@ -1,7 +1,9 @@
 #pragma once
 #include "Game/Public/Components/PhysicsComponent.h"
 
+
 class PhysicsComponent;
+
 class CircleColliderComponent : public PhysicsComponent
 {
 public:
@@ -11,11 +13,13 @@ public:
 	CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, float inRadius);
 	CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, float inRadius, bool inHasGravity, exVector2 inVelocity);
 
+	virtual bool GetIsGrounded() override;
 protected:
 	virtual void InitializeComponent();
 	virtual bool IsColliding(std::shared_ptr<PhysicsComponent> otherComponent); 
 
 private:
 	float mRadius;
+	bool mIsGrounded;
 };
 

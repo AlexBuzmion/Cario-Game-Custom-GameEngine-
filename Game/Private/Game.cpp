@@ -161,13 +161,9 @@ void Cario::Run(float fDeltaT)
 		
 	}
 
-	if (mInputManager.GetState().IsJumpPressed() && mBall->IsGrounded())
+	if (mInputManager.GetState().IsJumpPressed())
 	{
-		// Mark the ball as no longer grounded
-		mBall->SetGrounded(false);
-
-		// Set an upward velocity to initiate the jump
-		accumulatedVelocity.y = -mBall->GetJumpHeight(); // Negative to move upward in most 2D coordinate systems
+		mBall->Jump();
 	}
 
 	if (mInputManager.GetState().IsDownPressed())
@@ -177,19 +173,19 @@ void Cario::Run(float fDeltaT)
 
 	if (mInputManager.GetState().IsForwardPressed())
 	{
-		accumulatedVelocity.x += 4;
+		mBall->MoveDirection(4.0f);
 	}
 
 	if (mInputManager.GetState().IsBackwardPressed())
 	{
-		accumulatedVelocity.x -= 4;
+		mBall->MoveDirection(-4.0f);
 	}
 
 	if (mBall->IsGrounded()) 
 	{
 		accumulatedVelocity.y = 0;
 	}
-	charPhysics->SetVelocity(accumulatedVelocity); // Apply all velocity accumulated here
+	//charPhysics->SetVelocity(accumulatedVelocity); // Apply all velocity accumulated here
 
 	//mEngine->DrawText(mFontID, mTextPosition, "Super", c, 0); // rendering the text with the font and position
 	//mEngine->DrawText(mFontID, (mTextPosition + exVector2 {0.0f, 30.0f}), "Cario", c, 0); // rendering the text with the font and position

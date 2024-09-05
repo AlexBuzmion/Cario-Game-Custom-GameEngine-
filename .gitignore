@@ -90,6 +90,8 @@ node_modules/
 .gitignore
 
 # Ignore intermediate build files and logs
+OutGame/
+OutGame/*.tlog/
 OutGame/*.tlog
 OutGame/*.recipe
 OutGame/*.idb

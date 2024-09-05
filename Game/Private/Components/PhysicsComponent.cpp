@@ -41,6 +41,11 @@ void PhysicsComponent::RegisterListener(OnCollisionEvent eventToAdd)
 	mCollisionEvents.push_back(eventToAdd);
 }
 
+bool PhysicsComponent::GetIsGrounded()
+{
+	return false;
+}
+
 bool PhysicsComponent::IsColliding(std::shared_ptr<PhysicsComponent> otherComponent)
 {
 	return false;
@@ -55,7 +60,7 @@ void PhysicsComponent::Move()
 	if (std::shared_ptr<TransformComponent> transformComponent = owner->FindComponentOfType<TransformComponent>()) {
 		exVector2 currentPos = transformComponent->GetPosition();
 
-		if (mHasGravity && !mIsGrounded) {
+		if (mHasGravity) {
 			mVelocity.y += mGravityConstant;
 		}
 		exVector2 newPosition = currentPos + mVelocity;
@@ -71,16 +76,6 @@ exVector2 PhysicsComponent::GetVelocity() const
 void PhysicsComponent::SetVelocity(const exVector2& newVelocity)
 {
 	mVelocity = newVelocity;
-}
-
-bool PhysicsComponent::IsGrounded() const
-{
-	return mIsGrounded;
-}
-
-void PhysicsComponent::SetIsGrounded(const bool& newIsGrounded)
-{
-	mIsGrounded = newIsGrounded;
 }
 
 void PhysicsComponent::InitializeComponent()

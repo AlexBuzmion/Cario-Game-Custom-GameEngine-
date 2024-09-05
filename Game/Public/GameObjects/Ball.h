@@ -18,9 +18,14 @@ public:
 	
 	bool IsGrounded() const;
 	void SetGrounded(const bool& inIsGrounded); 
-	
+	void CheckGrounded(); 
 	float GetJumpHeight() const;
 	void SetJumpHeight(const float& inNewJumpHeight);
+
+	// Character movement
+	void Jump(); 
+
+	void MoveDirection(float directionX); 
 
 private:
 
@@ -34,7 +39,8 @@ private:
 	bool mHasGravity;
 
 	// movement
-	bool mIsGrounded;
+	bool mIsGrounded = false;
+	bool mIsJumping;
 	exVector2 mDirection;
 	float mJumpHeight = 7.0f;
 	

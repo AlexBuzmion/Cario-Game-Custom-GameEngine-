@@ -19,23 +19,21 @@ public:
 	PhysicsComponent(std::shared_ptr<GameObject> mOwner, bool inIsStatic, bool inHasGravity, exVector2 inVelocity);
 
 	void RegisterListener(OnCollisionEvent eventToAdd);
+	virtual bool GetIsGrounded();
 	virtual bool IsColliding(std::shared_ptr<PhysicsComponent> otherComponent);
 	virtual void Move(); // Todo: Implement Physics Engine and move to protected
 
 	exVector2 GetVelocity() const;
 	void SetVelocity(const exVector2& newVelocity );
 
-	bool IsGrounded() const; 
-	void SetIsGrounded(const bool& newIsGrounded);
 protected:
 	virtual void InitializeComponent() override; 
 	bool mIsStatic; 
 	bool mHasGravity; 
 	exVector2 mVelocity; // stores vector and speed 
-	bool mIsGrounded = false;
 
 private:
-	const float mGravityConstant = 9.8f;
+	const float mGravityConstant = 4.0f;
 	std::vector<OnCollisionEvent> mCollisionEvents; // stores all registered collision events
 };
 
