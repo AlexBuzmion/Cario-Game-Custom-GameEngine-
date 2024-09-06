@@ -1,56 +1,56 @@
-# Compiled object files
+# # Compiled object files
 *.obj
 *.o
-
-# Precompiled Headers
+*.tlog
+# # Precompiled Headers
 *.gch
 *.pch
 ipch/
 
-# Compiled Dynamic libraries
+# # Compiled Dynamic libraries
 *.so
-*.dylib
+# *.dylib
 # *.dll
+*.txt
+# # For Windows and macOS executables
+# # *.exe
+# *.out
+# *.app
 
-# For Windows and macOS executables
-# *.exe
-*.out
-*.app
+# # Static Libraries
+# # *.lib
+# *.a
 
-# Static Libraries
-# *.lib
-*.a
-
-# Debug and IntelliSense files
-*.pdb
-*.ipdb
+# # Debug and IntelliSense files
+# *.pdb
+# *.ipdb
 *.opendb
-*.ilk
-*.db
-*.VC.db
+# *.ilk
+# *.db
+# *.VC.db
 *.vsidx
 
-# Log files and temporary files
+# # Log files and temporary files
 *.log
-*.tmp
+# *.tmp
 
-# IDE Specific files
-# Visual Studio
-.vs/
-*.vcxproj*
-*.vcproj*
+# # IDE Specific files
+# # Visual Studio
+# .vs/
+# *.vcxproj*
+# *.vcproj*
 
-*.suo
+# *.suo
 *.user
 *.rsuser
 *.filters
 *.vcxproj.filters
-*.VC.db
-*.VC.opendb
-.vscode/
-
-# Mac OS
-*.DS_Store
+# *.VC.db
+# *.VC.opendb
+# .vscode/
+# *.vsidx
+# # Mac OS
+# *.DS_Store
 
 # Xcode
 # build/
@@ -58,47 +58,47 @@ DerivedData/
 *.xcworkspace
 xcuserdata/
 
-# CMake
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-Makefile
+# # CMake
+# CMakeFiles/
+# CMakeCache.txt
+# cmake_install.cmake
+# Makefile
 
-# Backup files
-*.bak
-*.old
-*.orig
-*.save
+# # Backup files
+# *.bak
+# *.old
+# *.orig
+# *.save
 
-# Package managers and dependencies
-/dependencies/
-node_modules/
+# # Package managers and dependencies
+# /dependencies/
+# node_modules/
 
-# SDL2 binaries
-*.dll
-# *.lib
-*.dylib
-*.so
-*.framework
+# # SDL2 binaries
+# *.dll
+# # *.lib
+# *.dylib
+# *.so
+# *.framework
 
-# Cache and other generated files
-*.dSYM/
-*.lock
-*.log
+# # Cache and other generated files
+# *.dSYM/
+# *.lock
+# *.log
 
-# Git itself
-.gitignore
+# # Git itself
+# .gitignore
 
-# Ignore intermediate build files and logs
-# OutGame/
-OutGame/*.tlog/
-OutGame/*.tlog
-OutGame/*.recipe
-OutGame/*.idb
-OutGame/*.lastbuildstate
-OutGame/*.exe
-OutGame/*.pdb
-# 3rdParty/
-Build/afternight.ttf
-OutGame/ball.new.obj.enc
-OutGame/circlecollidercomponent.obj.enc
+# # Ignore intermediate build files and logs
+# # OutGame/
+# OutGame/*.tlog/
+# OutGame/*.tlog
+# OutGame/*.recipe
+# OutGame/*.idb
+# OutGame/*.lastbuildstate
+# OutGame/*.exe
+# OutGame/*.pdb
+# # 3rdParty/
+# Build/afternight.ttf
+# OutGame/ball.new.obj.enc
+# OutGame/circlecollidercomponent.obj.enc
