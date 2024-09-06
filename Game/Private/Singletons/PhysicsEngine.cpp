@@ -63,19 +63,28 @@ void PhysicsEngine::Collide()
 			if (!otherComponent) continue;
 
 			if (currentComponent->IsColliding(otherComponent)) {
-				// Check if the current object is grounded by checking for floor-like collisions
+				 //Check if the current object is grounded by checking for floor-like collisions
+				//if (currentComponent->IsGroundedWith(otherComponent)) {
+				//	// Stop vertical movement when grounded
+				//	if (currentComponent->GetVelocity().y > 0) {
+				//		exVector2 velocity = currentComponent->GetVelocity();
+				//		velocity.y = 0;  // Stop falling
+				//		currentComponent->SetVelocity(velocity);
+				//	}
+				//}
+				//else {
+				//	// Apply collision response logic for walls, etc.
+				//	float owningX = -1.0f * currentComponent->mVelocity.x;
+				//	float owningY = -1.0f * currentComponent->mVelocity.y;
+				//	exVector2 newPos1 = exVector2{ owningX, owningY };
 
-				// Apply collision response logic for walls, etc.
-				float owningX = -1.0f * currentComponent->mVelocity.x;
-				float owningY = -1.0f * currentComponent->mVelocity.y;
-				exVector2 newPos1 = exVector2{ owningX, owningY };
+				//	float otherX = otherComponent->mVelocity.x;
+				//	float otherY = otherComponent->mVelocity.y;
+				//	exVector2 newPos2 = exVector2{ otherX, otherY };
 
-				float otherX = otherComponent->mVelocity.x;
-				float otherY = otherComponent->mVelocity.y;
-				exVector2 newPos2 = exVector2{ otherX, otherY };
-
-				currentComponent->SetVelocity(newPos1);
-				otherComponent->SetVelocity(newPos2);
+				//	currentComponent->SetVelocity(newPos1);
+				//	otherComponent->SetVelocity(newPos2);
+				//}
 			}
 		}
 	}

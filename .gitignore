@@ -13,7 +13,7 @@ ipch/
 *.dll
 
 # For Windows and macOS executables
-*.exe
+# *.exe
 *.out
 *.app
 
@@ -53,7 +53,7 @@ ipch/
 *.DS_Store
 
 # Xcode
-build/
+# build/
 DerivedData/
 *.xcworkspace
 xcuserdata/
@@ -108,3 +108,4 @@ OutGame/*.pdb
 3rdParty/SDL/SDL2_ttf-2.0.12/VisualC/SDL_ttf_VS2008.sln
 3rdParty/SDL/SDL2_ttf-2.0.12/VisualC/SDL_ttf_VS2010.sln
 3rdParty/SDL/SDL2_ttf-2.0.12/VisualC/SDL_ttf_VS2012.sln
+Build/afternight.ttf
