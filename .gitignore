@@ -98,7 +98,7 @@ OutGame/*.idb
 OutGame/*.lastbuildstate
 OutGame/*.exe
 OutGame/*.pdb
-3rdParty/
+# 3rdParty/
 3rdParty/SDL/SDL2_gfx-1.0.1/SDL2_gfx.sln
 3rdParty/SDL/SDL2_ttf-2.0.12/external/freetype-2.4.12/builds/win32/vc2005/freetype.sln
 3rdParty/SDL/SDL2_ttf-2.0.12/external/freetype-2.4.12/builds/win32/vc2008/freetype.sln
