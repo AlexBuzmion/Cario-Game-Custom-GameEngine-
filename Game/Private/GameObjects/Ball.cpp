@@ -35,7 +35,6 @@ Ball::Ball(exVector2 inDirection, exVector2 inSpawnLocation, float inColliderRad
 void Ball::Tick(float deltaTime)
 {
 	GameObject::Tick(deltaTime);
-	mIsGrounded = mPhysicsComponent->GetIsGrounded();
 	
 }
 

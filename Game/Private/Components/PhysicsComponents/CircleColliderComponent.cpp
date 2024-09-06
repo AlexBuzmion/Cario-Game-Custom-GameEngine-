@@ -110,28 +110,41 @@ bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> othe
 			float distY = circleCenter.y - testY;
 			float distance = std::sqrt((distX * distX) + (distY * distY));
 
+			auto owningObject = this->GetOwner().lock();
 			// Check if the distance is less than or equal to the circle's radius
 			if (distance <= mRadius) {
 				// stop downward movement by marking IsGrounded to true
 				if (testY == boxY) {
-
-					mIsGrounded = true;
 					// Only stop downward movement if the character is falling (velocity.y > 0)
 					if (ownerPhysicsComp && ownerPhysicsComp->GetVelocity().y > 0) {
 						exVector2 velocity = ownerPhysicsComp->GetVelocity();
 						velocity.y = 0; // Stop the downward velocity
 						ownerPhysicsComp->SetVelocity(velocity);
+						if (std::shared_ptr<Ball> character = std::dynamic_pointer_cast<Ball>(owningObject)) {
+							if (character->IsGrounded()) return true;
+							character->SetGrounded(true);
+						}
 					}
-
 					// Correct the position of the circle to sit exactly on top of the box
 					circleCenter.y = boxY - mRadius;  // Ensure the circle rests on the top of the box
 					ownerTransformComp->SetPosition(circleCenter); // Update the position to the corrected one
 				}
-				else {
-					mIsGrounded = false;
+				else if (testY == (boxY + boxHeight)) {
+					// Hitting the bottom of the box
+					if (ownerPhysicsComp && ownerPhysicsComp->GetVelocity().y < 0) {
+						exVector2 velocity = ownerPhysicsComp->GetVelocity();
+						velocity.y = 0; // Stop the upward movement
+						ownerPhysicsComp->SetVelocity(velocity);
+						// Optionally, apply gravity here so the ball starts descending after hitting the box
+						ownerPhysicsComp->SetVelocity(velocity);
+						if (std::shared_ptr<Ball> character = std::dynamic_pointer_cast<Ball>(owningObject)) {
+							// Set grounded to false since the ball is now falling again
+							character->SetGrounded(false);
+
+						}
+					}
 				}
 
-				ENGINE_PRINT("Circle Collided with Box", 40.0f, 50.0f);
 				return true;
 			}
 			

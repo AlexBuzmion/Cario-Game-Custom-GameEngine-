@@ -33,7 +33,7 @@ protected:
 	exVector2 mVelocity; // stores vector and speed 
 
 private:
-	const float mGravityConstant = 4.0f;
+	const float mGravityConstant = 9.8f;
 	std::vector<OnCollisionEvent> mCollisionEvents; // stores all registered collision events
 };
 

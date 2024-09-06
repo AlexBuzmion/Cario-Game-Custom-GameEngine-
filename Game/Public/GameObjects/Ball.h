@@ -42,6 +42,6 @@ private:
 	bool mIsGrounded = false;
 	bool mIsJumping;
 	exVector2 mDirection;
-	float mJumpHeight = 7.0f;
+	float mJumpHeight = 35.0f;
 	
 };

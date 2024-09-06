@@ -1,6 +1,7 @@
 #include "Game/Public/Singletons/PhysicsEngine.h"
 #include "Game/Public/Components/PhysicsComponent.h"
 #include "Game/Public/GameObject.h"
+#include "Game/Public/GameObjects/Ball.h"
 #include <thread>
 std::unique_ptr<PhysicsEngine> PhysicsEngine::sInstance = nullptr;
 PhysicsEngine::PhysicsEngine()
@@ -63,27 +64,18 @@ void PhysicsEngine::Collide()
 			if (!otherComponent) continue;
 
 			if (currentComponent->IsColliding(otherComponent)) {
-				 //Check if the current object is grounded by checking for floor-like collisions
-				//if (currentComponent->IsGroundedWith(otherComponent)) {
-				//	// Stop vertical movement when grounded
-				//	if (currentComponent->GetVelocity().y > 0) {
-				//		exVector2 velocity = currentComponent->GetVelocity();
-				//		velocity.y = 0;  // Stop falling
-				//		currentComponent->SetVelocity(velocity);
+				// logic specific to Ball/Character colliding with the top side of a box and setting it to isGrounded. 
+				//if (std::shared_ptr<CircleColliderComponent> circle = std::dynamic_pointer_cast<CircleColliderComponent>(currentComponent)) {
+				//	// Retrieve the GameObject that owns this CircleCollider
+				//	std::shared_ptr<GameObject> owningObject = circle->GetOwner().lock();
+				//	// Check if the owning object is a Ball or Character
+				//	if (std::shared_ptr<Ball> ball = std::dynamic_pointer_cast<Ball>(owningObject)) {
+				//		// Now you have access to the Ball object, and you can set its grounded state
+				//		if (ball->IsGrounded()) return;
+				//		// Set IsGrounded to true if collision with ground detected
+				//		ENGINE_PRINT("Is grounded set to true", 10.0f, 40.0f);
+				//		ball->SetGrounded(true);
 				//	}
-				//}
-				//else {
-				//	// Apply collision response logic for walls, etc.
-				//	float owningX = -1.0f * currentComponent->mVelocity.x;
-				//	float owningY = -1.0f * currentComponent->mVelocity.y;
-				//	exVector2 newPos1 = exVector2{ owningX, owningY };
-
-				//	float otherX = otherComponent->mVelocity.x;
-				//	float otherY = otherComponent->mVelocity.y;
-				//	exVector2 newPos2 = exVector2{ otherX, otherY };
-
-				//	currentComponent->SetVelocity(newPos1);
-				//	otherComponent->SetVelocity(newPos2);
 				//}
 			}
 		}
