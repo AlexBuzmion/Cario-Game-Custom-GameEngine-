@@ -1,6 +1,6 @@
 #pragma once
 #include "Game/Public/Components/PhysicsComponent.h"
-
+#include "Game/Public/Components/RenderComponents/BoxLineRender.h"
 class PhysicsComponent;
 class BoxColliderComponent : public PhysicsComponent
 {
@@ -16,9 +16,10 @@ public:
 	exVector2 GetPoint2() const;
 protected:
 	virtual void InitializeComponent();
-	virtual bool IsColliding(std::shared_ptr<PhysicsComponent> otherComponent);
+	virtual CollisionResult CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent, CollisionResult inResultToReturn);
 
 private:
+	std::shared_ptr<BoxLineRender> mBoxColliderRender;
 	exVector2 mPoint1; 
 	exVector2 mPoint2; 
 };

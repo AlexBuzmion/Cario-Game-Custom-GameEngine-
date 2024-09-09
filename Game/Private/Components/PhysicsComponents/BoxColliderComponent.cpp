@@ -57,9 +57,10 @@ exVector2 BoxColliderComponent::GetPoint2() const
 void BoxColliderComponent::InitializeComponent()
 {
 	PhysicsComponent::InitializeComponent();
+	mBoxColliderRender = mOwner.lock()->AddComponentOfType<BoxLineRender>(mPoint1, mPoint2, exColor{ 0, 255, 0, 255 }, 0);
 }
 
-bool BoxColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> otherComponent)
+CollisionResult BoxColliderComponent::CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent, CollisionResult inResultToReturn)
 {
-	return false;
+	return inResultToReturn;
 }

@@ -14,7 +14,7 @@ public:
 	static PhysicsEngine& GetInstance();
 
 	// iterates over all registered rendering components and calls their Render function
-	void SimulatePhysics();
+	void SimulatePhysics(float deltaTime);
 
 	// adds a rendering component to the list of components managed by the RenderEngine
 	void AddPhysicsComponent(std::shared_ptr<PhysicsComponent> physicsComponentToAdd);
@@ -23,8 +23,8 @@ private:
 	// needs to be a private constructor to enforce the Singleton pattern, preventing direct instantiation
 	PhysicsEngine();
 	
-	void Move();
-	void Collide();
+	void Move(float deltaTime);
+	void Collide(float deltaTime);
 
 	// unique pointer to the single instance of the RenderEngine
 	static std::unique_ptr<PhysicsEngine> sInstance;

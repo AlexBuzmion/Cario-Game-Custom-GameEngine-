@@ -26,13 +26,13 @@ PhysicsEngine& PhysicsEngine::GetInstance()
 	return *sInstance;
 }
 
-void PhysicsEngine::SimulatePhysics()
+void PhysicsEngine::SimulatePhysics(float deltaTime)
 {
-	Collide(); 
-	Move();
+	Collide(deltaTime);
+	Move(deltaTime);
 }
 
-void PhysicsEngine::Move()
+void PhysicsEngine::Move(float deltaTime)
 {
 	for (std::weak_ptr<PhysicsComponent> physicsComponentIter : mPhysicsComponentList) {
 		if (physicsComponentIter.expired()) {
@@ -44,11 +44,11 @@ void PhysicsEngine::Move()
 			continue;
 		}
 
-		currentComponent->Move();
+		currentComponent->Move(deltaTime);
 	}
 }
 
-void PhysicsEngine::Collide()
+void PhysicsEngine::Collide(float deltaTime)
 {
 	for (std::weak_ptr<PhysicsComponent> physicsComponentIter : mPhysicsComponentList) {
 		for (std::weak_ptr<PhysicsComponent> otherphysicsComponentIter : mPhysicsComponentList) {
@@ -59,25 +59,16 @@ void PhysicsEngine::Collide()
 			std::shared_ptr<PhysicsComponent> currentComponent = physicsComponentIter.lock();
 			std::shared_ptr<PhysicsComponent> otherComponent = otherphysicsComponentIter.lock();
 
-			if (currentComponent == otherComponent) continue;
-			if (!currentComponent) continue;
-			if (!otherComponent) continue;
+			if (currentComponent == otherComponent || !currentComponent || !otherComponent) continue;
+            
+			CollisionResult collisionData = currentComponent->CheckCollision(otherComponent);
 
-			if (currentComponent->IsColliding(otherComponent)) {
-				// logic specific to Ball/Character colliding with the top side of a box and setting it to isGrounded. 
-				//if (std::shared_ptr<CircleColliderComponent> circle = std::dynamic_pointer_cast<CircleColliderComponent>(currentComponent)) {
-				//	// Retrieve the GameObject that owns this CircleCollider
-				//	std::shared_ptr<GameObject> owningObject = circle->GetOwner().lock();
-				//	// Check if the owning object is a Ball or Character
-				//	if (std::shared_ptr<Ball> ball = std::dynamic_pointer_cast<Ball>(owningObject)) {
-				//		// Now you have access to the Ball object, and you can set its grounded state
-				//		if (ball->IsGrounded()) return;
-				//		// Set IsGrounded to true if collision with ground detected
-				//		ENGINE_PRINT("Is grounded set to true", 10.0f, 40.0f);
-				//		ball->SetGrounded(true);
-				//	}
-				//}
-			}
+            if (collisionData.mCollisionSide != CollisionSide::None) {
+                // iterates over all the events and send the collision update
+                for (OnCollisionEvent& collisionEvent : currentComponent->mCollisionEvents) {
+                    collisionEvent(collisionData, otherComponent->GetOwner());
+                }
+            }
 		}
 	}
 }

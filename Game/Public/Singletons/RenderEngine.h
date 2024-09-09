@@ -5,7 +5,7 @@
 
 class exEngineInterface;
 class RenderComponent;
-
+class CircleLineRender;
 //-----------------------------------------------------------------
 // RenderEngine Class
 // Manages the rendering process for all renderable components in the game.

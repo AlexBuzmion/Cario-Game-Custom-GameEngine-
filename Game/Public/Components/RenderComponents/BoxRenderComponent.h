@@ -7,7 +7,7 @@ public:
 	BoxRenderComponent() = delete;
 	~BoxRenderComponent(); 
 	BoxRenderComponent(std::shared_ptr<GameObject> inOwner);
-	BoxRenderComponent(std::shared_ptr<GameObject> inOwner, exVector2 inPoint1, exVector2 inPoint2, exColor inColor);
+	BoxRenderComponent(std::shared_ptr<GameObject> inOwner, exVector2 inPoint1, exVector2 inPoint2, exColor inColor, int layer);
 
 protected:
 	virtual void Render(exEngineInterface* inEngineInterface);

@@ -47,12 +47,13 @@ bool PhysicsComponent::GetIsGrounded()
 	return false;
 }
 
-bool PhysicsComponent::IsColliding(std::shared_ptr<PhysicsComponent> otherComponent)
+
+CollisionResult PhysicsComponent::CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent)
 {
-	return false;
+	return CollisionResult();
 }
 
-void PhysicsComponent::Move()
+void PhysicsComponent::Move(float deltaTime)
 {
 	if (mIsStatic) return;
 	if (mOwner.expired()) return; 
@@ -60,10 +61,16 @@ void PhysicsComponent::Move()
 	std::shared_ptr<GameObject> owner = mOwner.lock();
 	
 	if (std::shared_ptr<TransformComponent> transformComponent = owner->FindComponentOfType<TransformComponent>()) {
-		exVector2 currentPos = transformComponent->GetPosition();
+		exVector2 currentPos = transformComponent->GetPosition(); 
+		std::shared_ptr<Ball> ball = std::dynamic_pointer_cast<Ball>(owner);
+		if (!ball) return;
 
-		if (mHasGravity) {
-			mVelocity.y = mVelocity.y + mGravityConstant;
+		if (mHasGravity && !ball->IsJumping()) {
+			mVelocity.y += mGravityConstant * deltaTime; // apply gravity over time
+			ENGINE_PRINT(std::to_string(mVelocity.y), 10, 80);
+		}
+		if (ball->IsGrounded()) {
+			mVelocity.y = 0;
 		}
 		exVector2 newPosition = currentPos + mVelocity;
 		transformComponent->SetPosition(newPosition);

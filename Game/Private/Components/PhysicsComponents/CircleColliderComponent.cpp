@@ -1,4 +1,5 @@
 #include "Game/Public/Components/PhysicsComponents/CircleColliderComponent.h"
+#include "Game/Public/Components/PhysicsComponents/BoxColliderComponent.h"
 #include "Game/Public/GameObject.h"
 #include <cmath>
 #include <algorithm>
@@ -36,122 +37,120 @@ bool CircleColliderComponent::GetIsGrounded()
 void CircleColliderComponent::InitializeComponent()
 {
 	PhysicsComponent::InitializeComponent();
+
+	// Automatically add a CircleRenderComponent to visualize the collider
+	mCircleColliderRender = mOwner.lock()->AddComponentOfType<CircleLineRender>((mRadius+.2f), exColor{ 0, 255, 0, 255 }, 0);
 }
 
-bool CircleColliderComponent::IsColliding(std::shared_ptr<PhysicsComponent> otherComponent)
+
+
+CollisionResult CircleColliderComponent::CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent)
 {
-	static int printYOffset = 0;
-	// check if other component has a circle collider 
-	if (std::shared_ptr<CircleColliderComponent> otherCircleCollider = std::dynamic_pointer_cast<CircleColliderComponent>(otherComponent)) {
-		if (mOwner.expired() || otherCircleCollider->GetOwner().expired()) {
-			return false;
+	// create the result to pass to the collision check and receive back
+	CollisionResult result; 
+	result.mCollisionSide = CollisionSide::None;
+	result.mHitPoint = exVector2{ 0,0 }; 
 
+	//// Check if the other component is a CircleCollider
+	if (auto otherCircle = std::dynamic_pointer_cast<CircleColliderComponent>(otherComponent)) {
+		return CircleCollisionCheck(otherCircle, result);  // Perform circle-circle collision check
+	}
+
+	// Check if the other component is a BoxCollider
+	if (auto otherBox = std::dynamic_pointer_cast<BoxColliderComponent>(otherComponent)) {
+		return BoxCollisionCheck(otherBox, result);  // Perform circle-box collision check
+	}
+
+	return result;  // No collision
+
+}
+
+CollisionResult CircleColliderComponent::CircleCollisionCheck(std::shared_ptr<PhysicsComponent> otherCircle, CollisionResult inResultToReturn) const
+{
+	if (mOwner.expired() || otherCircle->GetOwner().expired()) return inResultToReturn;
+
+	auto ownerTransformComp = mOwner.lock()->FindComponentOfType<TransformComponent>();
+	auto otherTransformComp = otherCircle->GetOwner().lock()->FindComponentOfType<TransformComponent>();
+
+	if (ownerTransformComp && otherTransformComp) {
+		//Attempt to get the circle collider and validate; tried ! and it doesnt work
+		std::shared_ptr<CircleColliderComponent> otherCircleCollider = std::dynamic_pointer_cast<CircleColliderComponent>(otherCircle);
+		if (!otherCircleCollider ) {
+			 return inResultToReturn;
 		}
-		// get the center point of the game object
-		std::shared_ptr<TransformComponent> ownerTransformComp = mOwner.lock()->FindComponentOfType<TransformComponent>();
-		std::shared_ptr<TransformComponent> otherTransformComp = otherCircleCollider->mOwner.lock()->FindComponentOfType<TransformComponent>();
 
-		if (ownerTransformComp && otherTransformComp) { //if both objects are valid
-			// Print out debugging information without overlap by adjusting the Y position
-			auto ownerTransform = ownerTransformComp->GetPosition();
-			auto otherTransform = otherTransformComp->GetPosition();
-			exVector2 vectorBetweenCenterPts = ownerTransform - otherTransform;
-			// square root of x^2 + y^2 to get the distance between objects
-			float distanceBetweenCircle = std::sqrt((vectorBetweenCenterPts.x * vectorBetweenCenterPts.x) + (vectorBetweenCenterPts.y * vectorBetweenCenterPts.y));
-			// Print out debugging information without overlap by adjusting the Y position
+		exVector2 vectorBetweenCenters = ownerTransformComp->GetPosition() - otherTransformComp->GetPosition();
 
-			if (distanceBetweenCircle <= (mRadius + otherCircleCollider->mRadius)) {
-				ENGINE_PRINT("Circle Collided with another Circle" + std::to_string(IsColliding(otherComponent)), 10.0f, 100.0f);
-				return true;
-			}
+		float distanceBetweenCircles = std::sqrt(vectorBetweenCenters.x * vectorBetweenCenters.x + vectorBetweenCenters.y * vectorBetweenCenters.y);
+
+		if (distanceBetweenCircles <= (mRadius + otherCircleCollider->mRadius)) {
+			return inResultToReturn;  // For simplicity, assuming a top collision for now
 		}
 	}
 
-	if (std::shared_ptr<BoxColliderComponent> otherBoxCollider = std::dynamic_pointer_cast<BoxColliderComponent>(otherComponent)) {
-		if (mOwner.expired() || otherBoxCollider->GetOwner().expired()) {
-			return false;
+	return inResultToReturn;
+}
+
+CollisionResult CircleColliderComponent::BoxCollisionCheck(std::shared_ptr<PhysicsComponent> otherBox, CollisionResult inResultToReturn) const
+{
+	
+	auto ownerTransformComp = mOwner.lock()->FindComponentOfType<TransformComponent>();
+    auto boxTransformComp = otherBox->GetOwner().lock()->FindComponentOfType<TransformComponent>();
+
+    if (ownerTransformComp && boxTransformComp) {
+		//Attempt to get the circle collider and validate;
+		std::shared_ptr<BoxColliderComponent> otherBoxCollider = std::dynamic_pointer_cast<BoxColliderComponent>(otherBox);
+		if (!otherBoxCollider){
+			return inResultToReturn;
 		}
-		std::shared_ptr<TransformComponent> ownerTransformComp = mOwner.lock()->FindComponentOfType<TransformComponent>();
-		std::shared_ptr<TransformComponent> otherTransformComp = otherBoxCollider->GetOwner().lock()->FindComponentOfType<TransformComponent>();
-		std::shared_ptr<PhysicsComponent> ownerPhysicsComp = mOwner.lock()->FindComponentOfType<PhysicsComponent>();
+        auto circleCenter = ownerTransformComp->GetPosition();
+        // Get box points
+        auto boxPoint1 = otherBoxCollider->GetPoint1();
+        auto boxPoint2 = otherBoxCollider->GetPoint2();
 
-		if (ownerTransformComp && otherTransformComp) {
-			// Get the center point of the circle and the box
-			exVector2 circleCenter = ownerTransformComp->GetPosition();
-			exVector2 boxCenter = otherTransformComp->GetPosition();
-			// mRadius is already accessible
-			exVector2 boxPoint1 = otherBoxCollider->GetPoint1();
-			exVector2 boxPoint2 = otherBoxCollider->GetPoint2();
-			// Calculate box dimensions
-			float boxX = boxPoint1.x;   // Top-left x-coordinate of the box
-			float boxY = boxPoint1.y;   // Top-left y-coordinate of the box
-			float boxWidth = std::abs(boxPoint2.x - boxPoint1.x);   // Width of the box
-			float boxHeight = std::abs(boxPoint2.y - boxPoint1.y);  // Height of the box
+        // Box dimensions
+        float boxX = boxPoint1.x;
+        float boxY = boxPoint1.y;
+        float boxWidth = std::abs(boxPoint2.x - boxPoint1.x);
+        float boxHeight = std::abs(boxPoint2.y - boxPoint1.y);
 
-			// Variables to hold the closest point on the box to the circle's center
-			float testX = circleCenter.x;
-			float testY = circleCenter.y;
+        // Find the closest point on the box to the circle
+        float testX = std::clamp(circleCenter.x, boxX, boxX + boxWidth);
+        float testY = std::clamp(circleCenter.y, boxY, boxY + boxHeight);
 
-			// Find the closest point on the box to the circle's center
-			// Closest to the left edge
-			if (circleCenter.x < boxX) testX = boxX;  
-			// Closest to the right edge
-			else if (circleCenter.x > boxX + boxWidth) testX = boxX + boxWidth;  
+		inResultToReturn.mHitPoint = exVector2{ testX, testY };
+        float distX = circleCenter.x - testX;
+        float distY = circleCenter.y - testY;
+        float distance = std::sqrt((distX * distX) + (distY * distY));
 
-			// Closest to the top edge
-			if (circleCenter.y < boxY) {
-				testY = boxY;
-			}  
-			// Closest to the bottom edge 
-			else if (circleCenter.y > boxY + boxHeight) testY = boxY + boxHeight;  
+        if (distance <= mRadius) {
 
-			// Calculate the distance between the circle's center and the closest point
-			float distX = circleCenter.x - testX;
-			float distY = circleCenter.y - testY;
-			float distance = std::sqrt((distX * distX) + (distY * distY));
+			// Determine which side the collision occurred
+			float distToTop = std::abs(circleCenter.y - boxY);
+			float distToBottom = std::abs(circleCenter.y - (boxY + boxHeight));
+			float distToLeft = std::abs(circleCenter.x - boxX);
+			float distToRight = std::abs(circleCenter.x - (boxX + boxWidth));
 
-			auto owningObject = this->GetOwner().lock();
-			// Check if the distance is less than or equal to the circle's radius
-			if (distance <= mRadius) {
-				// stop downward movement by marking IsGrounded to true
-				if (testY == boxY) {
-					// Only stop downward movement if the character is falling (velocity.y > 0)
-					if (ownerPhysicsComp && ownerPhysicsComp->GetVelocity().y > 0) {
-						exVector2 velocity = ownerPhysicsComp->GetVelocity();
-						velocity.y = 0; // Stop the downward velocity
-						ownerPhysicsComp->SetVelocity(velocity);
-						if (std::shared_ptr<Ball> character = std::dynamic_pointer_cast<Ball>(owningObject)) {
-							if (character->IsGrounded()) return true;
-							character->SetGrounded(true);
-						}
-					}
-					// Correct the position of the circle to sit exactly on top of the box
-					circleCenter.y = boxY - mRadius;  // Ensure the circle rests on the top of the box
-					ownerTransformComp->SetPosition(circleCenter); // Update the position to the corrected one
-				}
-				else if (testY == (boxY + boxHeight)) {
-					// Hitting the bottom of the box
-					if (ownerPhysicsComp && ownerPhysicsComp->GetVelocity().y < 0) {
-						exVector2 velocity = ownerPhysicsComp->GetVelocity();
-						velocity.y = 0; // Stop the upward movement
-						ownerPhysicsComp->SetVelocity(velocity);
-						// Optionally, apply gravity here so the ball starts descending after hitting the box
-						ownerPhysicsComp->SetVelocity(velocity);
-						if (std::shared_ptr<Ball> character = std::dynamic_pointer_cast<Ball>(owningObject)) {
-							// Set grounded to false since the ball is now falling again
-							character->SetGrounded(false);
+			// Find the closest side
+			float minDist = std::min({ distToTop, distToBottom, distToLeft, distToRight });
 
-						}
-					}
-				}
-
-				return true;
+            // Determine collision side
+			if (testY == boxY) {
+				inResultToReturn.mCollisionSide = CollisionSide::Top;
 			}
-			
-		}
-	}
+			if (testY == boxY + boxHeight) {
+				inResultToReturn.mCollisionSide = CollisionSide::Bottom;
+			}
+			if (testX == boxX) {
+				inResultToReturn.mCollisionSide = CollisionSide::Left;
+			}
+			if (testX == boxX + boxWidth) {
+				inResultToReturn.mCollisionSide = CollisionSide::Right;
+			}
+        }
+    }
 
-	return false;
+    return inResultToReturn;
 }
 
 

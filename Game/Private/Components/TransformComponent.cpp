@@ -36,6 +36,16 @@ void TransformComponent::SetPosition(const exVector2& newPosition)
 	mPosition = newPosition; // Updates the GameObject's position.
 }
 
+exVector2 TransformComponent::GetScale() const
+{
+	return mScale;
+}
+
+void TransformComponent::SetScale(const exVector2& newScale)
+{
+	mScale = newScale; 
+}
+
 void TransformComponent::InitializeComponent()
 {
 }

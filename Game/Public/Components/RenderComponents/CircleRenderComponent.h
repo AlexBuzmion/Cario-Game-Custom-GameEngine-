@@ -24,6 +24,7 @@ public:
 	CircleRenderComponent(std::shared_ptr<GameObject> owner, float radius, exColor color);
 	CircleRenderComponent(std::shared_ptr<GameObject> owner, float radius, exColor color, int layer);
 
+	void SetRadius(float inRadiusChange);
 protected:
 	// overrides the abstract Render function from RenderComponent to provide the specific logic for rendering a circle
 	virtual void Render(exEngineInterface* inEngineInterface);

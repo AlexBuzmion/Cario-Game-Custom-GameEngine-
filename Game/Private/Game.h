@@ -14,6 +14,7 @@
 
 class Ball;
 class Cube;
+class PowerUpOne;
 //-----------------------------------------------------------------
 // BrickBrinBall Class
 // This class implements the core game logic by interfacing with the engine.
@@ -63,7 +64,8 @@ private:
 
     exVector2 mTextPosition;    // current position of the text, used for dynamic on-screen placement.
 
-    std::shared_ptr<Ball> mBall;// shared pointer to a Ball object, representing a game entity.
+    std::shared_ptr<Ball> Character;// shared pointer to a Ball object, representing a game entity.
+    std::shared_ptr<Ball> mBall;
     std::shared_ptr<Cube> mFloor1;
     std::shared_ptr<Cube> mWall1;
     std::shared_ptr<Cube> mWall2;
@@ -71,5 +73,7 @@ private:
     std::shared_ptr<Cube> mBreakable2;
     std::shared_ptr<Cube> mBreakable3;
     std::shared_ptr<Cube> mBreakable4;
-
+    
+    std::shared_ptr<Ball> mCollisionPoint;
+    std::shared_ptr<PowerUpOne> mMushroom;
 };

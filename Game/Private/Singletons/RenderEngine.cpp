@@ -26,6 +26,7 @@ void RenderEngine::Render(exEngineInterface* renderEngine)
 	// Iterate through all registered render components.
 	for (std::weak_ptr<RenderComponent> componentToRender : mRenderComponentList) {
 		if (!componentToRender.expired()) {
+			std::shared_ptr<RenderComponent> renderComponent = componentToRender.lock();
 			componentToRender.lock()->Render(renderEngine); // Lock the weak pointer and call Render if the component is still valid.
 		}
 	}

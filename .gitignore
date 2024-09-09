@@ -103,3 +103,4 @@ Build/afternight.ttf
 OutGame/ball.new.obj.enc
 OutGame/circlecollidercomponent.obj.enc
 OutGame/physicsengine.new.obj.enc
+OutGame/physicscomponent.obj.enc

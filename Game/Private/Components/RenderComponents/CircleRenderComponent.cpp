@@ -31,6 +31,11 @@ CircleRenderComponent::CircleRenderComponent(std::shared_ptr<GameObject> owner, 
 	// Constructor: Initializes the CircleRenderComponent with a specified radius, color, and layer.
 }
 
+void CircleRenderComponent::SetRadius(float inRadiusChange)
+{
+	mOwner.lock()->FindComponentOfType<TransformComponent>()->SetScale({inRadiusChange, inRadiusChange});
+}
+
 void CircleRenderComponent::Render(exEngineInterface* inEngineInterface)
 {
 	if (mOwner.expired())
@@ -42,6 +47,7 @@ void CircleRenderComponent::Render(exEngineInterface* inEngineInterface)
 	if (std::shared_ptr<TransformComponent> renderTransformComponent = owningGameObject->FindComponentOfType<TransformComponent>())
 	{
 		const exVector2 position = renderTransformComponent->GetPosition(); // Get the position from the TransformComponent.
-		inEngineInterface->DrawCircle(position, mRadius, mColor, 0); // Draw the circle at the specified position, radius, and color.
+		float scaledRadius = mRadius * (renderTransformComponent->GetScale().x + renderTransformComponent->GetScale().y) * 0.5f;
+		inEngineInterface->DrawCircle(position, scaledRadius, mColor, 0); // Draw the circle at the specified position, radius, and color.
 	}
 }

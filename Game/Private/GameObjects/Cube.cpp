@@ -34,7 +34,8 @@ void Cube::BeginPlay()
 	GameObject::BeginPlay();
 	mTransform = AddComponentOfType<TransformComponent>(mSpawnLocation);
 	//std::shared_ptr<GameObject> inOwner, exVector2 inPoint1, exVector2 inPoint2, exColor inColor
-	mBoxRenderComponent = AddComponentOfType<BoxRenderComponent>(mPoint1, mPoint2, mColor);
+	mBoxRenderComponent = AddComponentOfType<BoxRenderComponent>(mPoint1, mPoint2, mColor, 0);
 	// bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2, bool inHasGravity, exVector2 inVelocity
 	mPhysicsComponent = AddComponentOfType<BoxColliderComponent>(true, mPoint1, mPoint2, false);
+	
 }

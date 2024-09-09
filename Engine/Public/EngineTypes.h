@@ -43,3 +43,4 @@ struct exColor
 {
 	unsigned char mColor[4];
 };
+

@@ -12,7 +12,7 @@ BoxRenderComponent::BoxRenderComponent(std::shared_ptr<GameObject> inOwner) : Re
 	point2 = exVector2{400.0f, 200.0f};
 }
 
-BoxRenderComponent::BoxRenderComponent(std::shared_ptr<GameObject> inOwner, exVector2 inPoint1, exVector2 inPoint2, exColor inColor) : RenderComponent(inOwner, inColor)
+BoxRenderComponent::BoxRenderComponent(std::shared_ptr<GameObject> inOwner, exVector2 inPoint1, exVector2 inPoint2, exColor inColor, int layer) : RenderComponent(inOwner, inColor, layer)
 {
 	point1 = inPoint1;
 	point2 = inPoint2;

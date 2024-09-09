@@ -28,6 +28,10 @@ public:
 	exVector2 GetPosition() const;          // retrieves the current position of the GameObject
 	void SetPosition(const exVector2& newPosition); // sets a new position for the GameObject
 
+	exVector2 GetScale() const; 
+	void SetScale(const exVector2& newScale);
+
+	// add a function update transform based on camera offset 
 protected: 
 	virtual void InitializeComponent() override; 
 

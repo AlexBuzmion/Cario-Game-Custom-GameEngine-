@@ -2,6 +2,7 @@
 #include "Engine/Public/EngineInterface.h"
 #include "Game/Public/GameObjects/Ball.h"
 #include "Game/Public/GameObjects/Cube.h"
+#include "Game/Public/GameObjects/PowerUpOne.h"
 #include "Engine/Public/SDL.h"
 #include "Game/Public/Singletons/RenderEngine.h"
 #include "Game/Public/Singletons/PhysicsEngine.h"
@@ -53,14 +54,9 @@ void Cario::Initialize(exEngineInterface* pEngine)
 	// setting initial position for text display; can be adjusted based on game needs
 	mTextPosition.x = 50.0f;
 	mTextPosition.y = 50.0f;
-
-	mBall = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,400.0f }, 25.0f, exColor{ 180, 10, 10,255 }, true);
-	mBall->BeginPlay();
-
-	//exVector2 inSpawnLoc, exColor inColor, bool inHasGravity, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2
+	// world objects 
 	mFloor1 = std::make_shared<Cube>(exVector2 {0.0f, 550.0f}, exColor{ 125, 10, 10, 255 }, false, true, exVector2 {50.0f, 10.0f}, exVector2 {750.0f, 50.0f});
 	mFloor1->BeginPlay();
-
 	mWall1 = std::make_shared<Cube>(exVector2{ 0.0f, 460.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
 	mWall1->BeginPlay();
 	mWall2 = std::make_shared<Cube>(exVector2{ 650.0f, 460.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
@@ -73,7 +69,15 @@ void Cario::Initialize(exEngineInterface* pEngine)
 	mBreakable3->BeginPlay();
 	mBreakable4 = std::make_shared<Cube>(exVector2{ 350.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
 	mBreakable4->BeginPlay();
+	// character 
+	Character = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,200.0f }, 25.0f, exColor{ 180, 10, 10,255 }, true);
+	Character->BeginPlay();
+	// collision checks 
+	mCollisionPoint = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,400.0f }, 5.0f, exColor{ 10, 10, 180,255 }, false);
+	mCollisionPoint->BeginPlay();
 
+	mMushroom = std::make_shared<PowerUpOne>();
+	mMushroom->BeginPlay();
 }
 
 //-----------------------------------------------------------------
@@ -140,10 +144,10 @@ void Cario::OnEventsConsumed()
 
 void Cario::Run(float fDeltaT)
 {
-	mBall->Tick(fDeltaT);
+	Character->Tick(fDeltaT);
 	// store all of the characters components for easy access later on 
-	std::shared_ptr<TransformComponent> charTransform = mBall->FindComponentOfType<TransformComponent>(); 
-	std::shared_ptr<CircleColliderComponent> charPhysics = mBall->FindComponentOfType<CircleColliderComponent>();
+	std::shared_ptr<TransformComponent> charTransform = Character->FindComponentOfType<TransformComponent>(); 
+	std::shared_ptr<CircleColliderComponent> charPhysics = Character->FindComponentOfType<CircleColliderComponent>();
 	exVector2 charVelocity = charPhysics->GetVelocity();
 	
 	exVector2 accumulatedVelocity = {0.0f, 0.0f}; 
@@ -164,7 +168,7 @@ void Cario::Run(float fDeltaT)
 
 	if (mInputManager.GetState().IsJumpPressed())
 	{
-		mBall->Jump();
+		Character->Jump();
 	}
 
 	if (mInputManager.GetState().IsDownPressed())
@@ -173,24 +177,26 @@ void Cario::Run(float fDeltaT)
 	}
 
 	if (mInputManager.GetState().IsForwardPressed()) {
-		mBall->MoveDirection(4.0f);  // Move right
+		Character->MoveDirection(4.0f);  // Move right
 	}
 	else if (mInputManager.GetState().IsBackwardPressed()) {
-		mBall->MoveDirection(-4.0f);  // Move left
+		Character->MoveDirection(-4.0f);  // Move left
 	}
 	else {
-		mBall->MoveDirection(0.0f);  // No input, stop movement
+		Character->MoveDirection(0.0f);  // No input, stop movement
 	}
 
-	if (mBall->IsGrounded())
+	/*if (Character->IsGrounded())
 	{
 		charPhysics->SetVelocity({ charPhysics->GetVelocity().x, 0});
-	}
+	}*/
 	//charPhysics->SetVelocity(accumulatedVelocity); // Apply all velocity accumulated here
 
 	//mEngine->DrawText(mFontID, mTextPosition, "Super", c, 0); // rendering the text with the font and position
 	//mEngine->DrawText(mFontID, (mTextPosition + exVector2 {0.0f, 30.0f}), "Cario", c, 0); // rendering the text with the font and position
 	
 	RENDER_ENGINE.Render(mEngine);
-	PHYSICS_ENGINE.SimulatePhysics();
+	PHYSICS_ENGINE.SimulatePhysics(fDeltaT);
+	
+	mCollisionPoint->FindComponentOfType<TransformComponent>()->SetPosition(Character->GetCollisionPoint());
 }
