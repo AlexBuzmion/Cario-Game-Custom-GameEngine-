@@ -37,7 +37,7 @@ ipch/
 # IDE Specific files
 # Visual Studio
 .vs/
-*.vcxproj*
+# *.vcxproj*
 *.vcproj*
 
 *.suo
