@@ -60,7 +60,6 @@ void Cube::Interact()
 	case ObjectType::PowerUpBox:
 		mBoxRenderComponent->SetColor({ 100, 100, 0, 255 });
 	}
-
 }
 
 void Cube::SetPowerUp(const std::shared_ptr<PowerUpOne> inPowerUp)
