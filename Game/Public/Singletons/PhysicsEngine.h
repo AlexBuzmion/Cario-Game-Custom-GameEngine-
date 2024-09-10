@@ -18,7 +18,7 @@ public:
 
 	// adds a rendering component to the list of components managed by the RenderEngine
 	void AddPhysicsComponent(std::shared_ptr<PhysicsComponent> physicsComponentToAdd);
-
+	void RemovePhysicsComponent(std::shared_ptr<PhysicsComponent> componentToRemove);
 private:
 	// needs to be a private constructor to enforce the Singleton pattern, preventing direct instantiation
 	PhysicsEngine();

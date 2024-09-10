@@ -42,6 +42,20 @@ void PhysicsComponent::RegisterListener(OnCollisionEvent eventToAdd)
 	mCollisionEvents.push_back(eventToAdd);
 }
 
+void PhysicsComponent::UnregisterListener(OnCollisionEvent eventToRemove)
+{
+	auto it = std::find_if(mCollisionEvents.begin(), mCollisionEvents.end(),
+		[&](const OnCollisionEvent& event) {
+			// Compare event targets, assuming eventToRemove is the same function as registered
+			return event.target<void(CollisionResult, std::weak_ptr<GameObject>)>() ==
+				eventToRemove.target<void(CollisionResult, std::weak_ptr<GameObject>)>();
+		});
+
+	if (it != mCollisionEvents.end()) {
+		mCollisionEvents.erase(it);  // Remove the listener
+	}
+}
+
 bool PhysicsComponent::GetIsGrounded()
 {
 	return false;
@@ -87,7 +101,13 @@ void PhysicsComponent::SetVelocity(const exVector2& newVelocity)
 	mVelocity = newVelocity;
 }
 
+void PhysicsComponent::RemoveFromComponentList()
+{
+	PHYSICS_ENGINE.RemovePhysicsComponent(shared_from_this());
+}
+
 void PhysicsComponent::InitializeComponent()
 {
 	PHYSICS_ENGINE.AddPhysicsComponent(shared_from_this());
 }
+

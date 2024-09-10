@@ -35,6 +35,7 @@ public:
 	PhysicsComponent(std::shared_ptr<GameObject> mOwner, bool inIsStatic, bool inHasGravity, exVector2 inVelocity);
 
 	void RegisterListener(OnCollisionEvent eventToAdd);
+	void UnregisterListener(OnCollisionEvent eventToRemove);
 	virtual bool GetIsGrounded();
 	virtual CollisionResult CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent);
 	virtual void Move(float deltaTime); // Todo: Implement Physics Engine and move to protected
@@ -42,6 +43,7 @@ public:
 	exVector2 GetVelocity() const;
 	void SetVelocity(const exVector2& newVelocity );
 
+	virtual void RemoveFromComponentList(); 
 protected:
 	virtual void InitializeComponent() override; 
 	bool mIsStatic; 

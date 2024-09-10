@@ -17,6 +17,21 @@ void PhysicsEngine::AddPhysicsComponent(std::shared_ptr<PhysicsComponent> physic
 	mPhysicsComponentList.push_back(physicsComponentToAdd);
 }
 
+void PhysicsEngine::RemovePhysicsComponent(std::shared_ptr<PhysicsComponent> componentToRemove)
+{
+	for (auto it = mPhysicsComponentList.begin(); it != mPhysicsComponentList.end(); ++it)
+	{
+		if (auto component = it->lock()) // Check if weak_ptr is valid
+		{
+			if (component == componentToRemove)
+			{
+				mPhysicsComponentList.erase(it); // Erase the matching component
+				break; // Exit after removing the component
+			}
+		}
+	}
+}
+
 PhysicsEngine& PhysicsEngine::GetInstance()
 {
 	if (!sInstance) {

@@ -55,19 +55,20 @@ void Cario::Initialize(exEngineInterface* pEngine)
 	mTextPosition.x = 50.0f;
 	mTextPosition.y = 50.0f;
 	// world objects 
-	mFloor1 = std::make_shared<Cube>(exVector2 {0.0f, 550.0f}, exColor{ 125, 10, 10, 255 }, false, true, exVector2 {50.0f, 10.0f}, exVector2 {750.0f, 50.0f}, ObjectType::Brick);
+	
+	mFloor1 = std::make_shared<Cube>(exVector2 {400.0f, 550.0f}, exColor{ 125, 10, 10, 255 }, false, true, exVector2 {50.0f, 550.0f}, exVector2 {750.0f, 600.0f}, ObjectType::Brick);
 	mFloor1->BeginPlay();
-	mWall1 = std::make_shared<Cube>(exVector2{ 0.0f, 460.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	mWall1 = std::make_shared<Cube>(exVector2{ 75.0f, 500.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 500.0f }, exVector2{ 100.0f, 550.0f }, ObjectType::Brick);
 	mWall1->BeginPlay();
-	mWall2 = std::make_shared<Cube>(exVector2{ 650.0f, 460.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	mWall2 = std::make_shared<Cube>(exVector2{ 725.0f, 500.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mWall2->BeginPlay();
-	mBreakable1 = std::make_shared<Cube>(exVector2{ 200.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	mBreakable1 = std::make_shared<Cube>(exVector2{ 250.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable1->BeginPlay();
-	mBreakable2 = std::make_shared<Cube>(exVector2{ 250.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	mBreakable2 = std::make_shared<Cube>(exVector2{ 300.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable2->BeginPlay();	
-	mBreakable3 = std::make_shared<Cube>(exVector2{ 300.0f, 300.0f }, exColor{ 200, 200, 0, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::PowerUpBox);
-	mBreakable3->BeginPlay();
-	mBreakable4 = std::make_shared<Cube>(exVector2{ 350.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	powerUpBox = std::make_shared<Cube>(exVector2{ 350.0f, 300.0f }, exColor{ 200, 200, 0, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::PowerUpBox);
+	powerUpBox->BeginPlay();
+	mBreakable4 = std::make_shared<Cube>(exVector2{ 400.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable4->BeginPlay();
 	// character 
 	Character = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,200.0f }, 25.0f, exColor{ 180, 10, 10,255 }, true);
@@ -75,10 +76,9 @@ void Cario::Initialize(exEngineInterface* pEngine)
 	// collision checks 
 	mCollisionPoint = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,400.0f }, 5.0f, exColor{ 10, 10, 180,255 }, false);
 	mCollisionPoint->BeginPlay();
-
 	mMushroom = std::make_shared<PowerUpOne>();
 	mMushroom->BeginPlay();
-
+	powerUpBox->SetPowerUp(mMushroom);
 }
 
 //-----------------------------------------------------------------
@@ -193,4 +193,5 @@ void Cario::Run(float fDeltaT)
 	PHYSICS_ENGINE.SimulatePhysics(fDeltaT);
 	
 	mCollisionPoint->FindComponentOfType<TransformComponent>()->SetPosition(Character->GetCollisionPoint());
+	mMushroom->Tick(fDeltaT);
 }

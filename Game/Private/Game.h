@@ -71,7 +71,7 @@ private:
     std::shared_ptr<Cube> mWall2;
     std::shared_ptr<Cube> mBreakable1;
     std::shared_ptr<Cube> mBreakable2;
-    std::shared_ptr<Cube> mBreakable3;
+    std::shared_ptr<Cube> powerUpBox;
     std::shared_ptr<Cube> mBreakable4;
     
     std::shared_ptr<Ball> mCollisionPoint;

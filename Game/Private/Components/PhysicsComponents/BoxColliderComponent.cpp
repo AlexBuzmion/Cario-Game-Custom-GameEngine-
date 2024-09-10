@@ -17,14 +17,19 @@ BoxColliderComponent::BoxColliderComponent(std::shared_ptr<GameObject> inOwner, 
 	mPoint2 = inPoint2;
 }
 
-BoxColliderComponent::BoxColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2, bool inHasGravity) : PhysicsComponent(inOwner, inIsStatic, inHasGravity)
+BoxColliderComponent::BoxColliderComponent(std::shared_ptr<GameObject> inOwner, exVector2 inSpawnLoc, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2, bool inHasGravity) : PhysicsComponent(inOwner, inIsStatic, inHasGravity)
 {
 	// Adjust mPoint1 and mPoint2 based on the owning object's position
 	std::shared_ptr<TransformComponent> transformComp = inOwner->FindComponentOfType<TransformComponent>();
 	if (transformComp) {
-		exVector2 spawnPosition = transformComp->GetPosition();
-		mPoint1 = inPoint1 + spawnPosition;
-		mPoint2 = inPoint2 + spawnPosition;
+		mPoint1 = inPoint1;
+		mPoint2 = inPoint2;
+		// Calculate half-width and half-height of the box
+		exVector2 halfDimensions = (mPoint2 - mPoint1) * 0.5f;
+
+		// Calculate the top-left and bottom-right corner relative to the center (spawnPoint)
+		mPoint1 = inSpawnLoc - halfDimensions;
+		mPoint2 = inSpawnLoc + halfDimensions;
 		AccessEngine()->DrawLineBox(mPoint1, mPoint2, exColor{ 0,255,0,255 }, 1);
 	}
 }

@@ -14,6 +14,8 @@ public:
 	void OnCollisionDetected(CollisionResult inResult, std::weak_ptr<GameObject> otherObjectHit);
 
 	int GetPowerUpLvl();
+	void AnimateSpawn();
+	void Move();
 
 	std::shared_ptr<TransformComponent> mTransform; 
 	std::shared_ptr<CircleRenderComponent> mCircleRenderComponent; 
@@ -26,6 +28,7 @@ private:
 	exColor mColor; 
 	bool mHasGravity; 
 	bool mIsGrounded; 
+	bool mInitialSpawn = false; 
 	int mPowerUpLvl;
 };
 

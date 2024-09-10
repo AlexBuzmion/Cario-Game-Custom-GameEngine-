@@ -8,7 +8,7 @@ public:
 	BoxColliderComponent() = delete;
 	BoxColliderComponent(std::shared_ptr<GameObject> inOwner);
 	BoxColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2);
-	BoxColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2, bool inHasGravity);
+	BoxColliderComponent(std::shared_ptr<GameObject> inOwner, exVector2 inSpawnLocbool, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2, bool inHasGravity);
 	BoxColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2, bool inHasGravity, exVector2 inVelocity);
 	
 	exVector2 GetSize() const; 

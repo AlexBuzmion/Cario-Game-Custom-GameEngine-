@@ -1,7 +1,7 @@
 #pragma once
 #include "Game/Public/GameObject.h"
+#include "Game/Public/GameObjects/PowerUpOne.h"
 
-class PowerUpOne;
 enum class ObjectType {
 	Brick, 
 	PowerUpBox,

@@ -12,10 +12,13 @@ BoxRenderComponent::BoxRenderComponent(std::shared_ptr<GameObject> inOwner) : Re
 	point2 = exVector2{400.0f, 200.0f};
 }
 
-BoxRenderComponent::BoxRenderComponent(std::shared_ptr<GameObject> inOwner, exVector2 inPoint1, exVector2 inPoint2, exColor inColor, int layer) : RenderComponent(inOwner, inColor, layer)
+BoxRenderComponent::BoxRenderComponent(std::shared_ptr<GameObject> inOwner, exVector2 inSpawnLoc, exVector2 inPoint1, exVector2 inPoint2, exColor inColor, int layer) : RenderComponent(inOwner, inColor, layer)
 {
+	// Store input parameters
 	point1 = inPoint1;
 	point2 = inPoint2;
+
+	
 }
 
 void BoxRenderComponent::Render(exEngineInterface* inEngineInterface)
@@ -25,12 +28,16 @@ void BoxRenderComponent::Render(exEngineInterface* inEngineInterface)
 	std::shared_ptr<GameObject> owningGameObject = mOwner.lock(); // Lock the weak pointer to get a shared pointer.
 	if (std::shared_ptr<TransformComponent> renderTransformComponent = owningGameObject->FindComponentOfType<TransformComponent>())
 	{
-		const exVector2 position = renderTransformComponent->GetPosition(); // Get the position from the TransformComponent.
+		// Get the current position from the TransformComponent
+		exVector2 position = renderTransformComponent->GetPosition();
 
-		// adjsut the DrawBox positions to the spawn point location
-		exVector2 adjustedPos1 = point1 + position;
-		exVector2 adjustedPos2 = point2 + position;
+		// Calculate half-width and half-height of the box
+		exVector2 halfDimensions = (point2 - point1) * 0.5f;
 
-		inEngineInterface->DrawBox(adjustedPos1, adjustedPos2, mColor, 0); // Draw the circle at the specified position, radius, and color.
+		// Calculate the top-left and bottom-right corner relative to the current position (spawnPoint)
+		exVector2 adjustedPoint1 = position - halfDimensions;
+		exVector2 adjustedPoint2 = position + halfDimensions;
+
+		inEngineInterface->DrawBox(adjustedPoint1, adjustedPoint2, mColor, 0);
 	}
 }

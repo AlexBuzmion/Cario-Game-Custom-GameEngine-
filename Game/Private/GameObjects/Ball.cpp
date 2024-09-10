@@ -50,7 +50,8 @@ void Ball::Tick(float deltaTime)
 {
 	GameObject::Tick(deltaTime);
 	exVector2 currentPosition = mTransform->GetPosition();
-
+	/*ENGINE_PRINT("Character Pos X: " + std::to_string(mTransform->GetPosition().x), 400, 40);
+	ENGINE_PRINT("Character Pos Y: " + std::to_string(mTransform->GetPosition().y), 400, 60);*/
 	// handles jumping animation
 	if (mIsJumping) {
 		// Apply the jump force as long as the ball hasn't reached the target height

@@ -7,7 +7,7 @@ PowerUpOne::PowerUpOne()
 	mColliderRadius = 25.0f; 
 	mDirection = { 0, 5.0f };
 	mColor = { 180, 180 ,100 ,255 };
-	mSpawnLocation = { 150.0f, 250.0f };
+	mSpawnLocation = { -20.0f, -20.0f };
 	mHasGravity = true; 
 	mIsGrounded = false;
 	mPowerUpLvl = 1;
@@ -31,7 +31,11 @@ PowerUpOne::PowerUpOne(exVector2 inDirection, exVector2 inSpawnLocation, float i
 void PowerUpOne::Tick(float deltaTime)
 {
 	GameObject::Tick(deltaTime);
-
+	ENGINE_PRINT("Mushroom Pos X: " + std::to_string(mTransform->GetPosition().x), 200, 40);
+	ENGINE_PRINT("Mushroom Pos Y: " + std::to_string(mTransform->GetPosition().y), 200, 60);
+	if (mInitialSpawn) {
+ 		mPhysicsComponent->SetVelocity({ 5,0 });
+	}
 }
 
 void PowerUpOne::BeginPlay()
@@ -107,4 +111,14 @@ void PowerUpOne::OnCollisionDetected(CollisionResult inResult, std::weak_ptr<Gam
 int PowerUpOne::GetPowerUpLvl()
 {
 	return mPowerUpLvl;
+}
+
+void PowerUpOne::AnimateSpawn()
+{
+	mInitialSpawn = true; 
+}
+
+void PowerUpOne::Move()
+{
+
 }

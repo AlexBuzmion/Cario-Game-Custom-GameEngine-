@@ -20,7 +20,7 @@ struct exVector2
 	}
 
 	exVector2 operator-(const exVector2& other) {
-		return exVector2(this->x - other.x, this->y + other.y);
+		return exVector2(this->x - other.x, this->y - other.y);
 	}
 
 	exVector2 operator*(const float& other) {
