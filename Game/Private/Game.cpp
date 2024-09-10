@@ -55,19 +55,19 @@ void Cario::Initialize(exEngineInterface* pEngine)
 	mTextPosition.x = 50.0f;
 	mTextPosition.y = 50.0f;
 	// world objects 
-	mFloor1 = std::make_shared<Cube>(exVector2 {0.0f, 550.0f}, exColor{ 125, 10, 10, 255 }, false, true, exVector2 {50.0f, 10.0f}, exVector2 {750.0f, 50.0f});
+	mFloor1 = std::make_shared<Cube>(exVector2 {0.0f, 550.0f}, exColor{ 125, 10, 10, 255 }, false, true, exVector2 {50.0f, 10.0f}, exVector2 {750.0f, 50.0f}, ObjectType::Brick);
 	mFloor1->BeginPlay();
-	mWall1 = std::make_shared<Cube>(exVector2{ 0.0f, 460.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
+	mWall1 = std::make_shared<Cube>(exVector2{ 0.0f, 460.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mWall1->BeginPlay();
-	mWall2 = std::make_shared<Cube>(exVector2{ 650.0f, 460.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
+	mWall2 = std::make_shared<Cube>(exVector2{ 650.0f, 460.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mWall2->BeginPlay();
-	mBreakable1 = std::make_shared<Cube>(exVector2{ 200.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
+	mBreakable1 = std::make_shared<Cube>(exVector2{ 200.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable1->BeginPlay();
-	mBreakable2 = std::make_shared<Cube>(exVector2{ 250.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
+	mBreakable2 = std::make_shared<Cube>(exVector2{ 250.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable2->BeginPlay();	
-	mBreakable3 = std::make_shared<Cube>(exVector2{ 300.0f, 300.0f }, exColor{ 200, 200, 0, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
+	mBreakable3 = std::make_shared<Cube>(exVector2{ 300.0f, 300.0f }, exColor{ 200, 200, 0, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::PowerUpBox);
 	mBreakable3->BeginPlay();
-	mBreakable4 = std::make_shared<Cube>(exVector2{ 350.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f });
+	mBreakable4 = std::make_shared<Cube>(exVector2{ 350.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable4->BeginPlay();
 	// character 
 	Character = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,200.0f }, 25.0f, exColor{ 180, 10, 10,255 }, true);
@@ -78,6 +78,7 @@ void Cario::Initialize(exEngineInterface* pEngine)
 
 	mMushroom = std::make_shared<PowerUpOne>();
 	mMushroom->BeginPlay();
+
 }
 
 //-----------------------------------------------------------------
@@ -145,14 +146,7 @@ void Cario::OnEventsConsumed()
 void Cario::Run(float fDeltaT)
 {
 	Character->Tick(fDeltaT);
-	// store all of the characters components for easy access later on 
-	std::shared_ptr<TransformComponent> charTransform = Character->FindComponentOfType<TransformComponent>(); 
-	std::shared_ptr<CircleColliderComponent> charPhysics = Character->FindComponentOfType<CircleColliderComponent>();
-	exVector2 charVelocity = charPhysics->GetVelocity();
-	
-	exVector2 accumulatedVelocity = {0.0f, 0.0f}; 
 
-	charPhysics->SetVelocity(charVelocity);
 	// drawing the text at the current position with a specific color
 	exColor c;
 	c.mColor[0] = 25;   // green color for text

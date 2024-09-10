@@ -2,6 +2,7 @@
 #include "Game/Public/GameObject.h"
 class PowerUpOne : public GameObject
 {
+	friend class Cube;
 public: 
 	PowerUpOne(); 
 	~PowerUpOne();

@@ -54,6 +54,11 @@ exVector2 BoxColliderComponent::GetPoint2() const
 	return mPoint2;
 }
 
+void BoxColliderComponent::DisableColliderBoxRender()
+{
+	mBoxColliderRender->SetColor({ 0,0,0,0 });
+}
+
 void BoxColliderComponent::InitializeComponent()
 {
 	PhysicsComponent::InitializeComponent();

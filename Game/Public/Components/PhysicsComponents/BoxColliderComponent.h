@@ -14,6 +14,7 @@ public:
 	exVector2 GetSize() const; 
 	exVector2 GetPoint1() const;
 	exVector2 GetPoint2() const;
+	void DisableColliderBoxRender();
 protected:
 	virtual void InitializeComponent();
 	virtual CollisionResult CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent, CollisionResult inResultToReturn);

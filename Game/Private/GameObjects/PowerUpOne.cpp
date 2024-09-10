@@ -4,10 +4,10 @@
 
 PowerUpOne::PowerUpOne()
 {
-	mColliderRadius = 80.0f; 
+	mColliderRadius = 25.0f; 
 	mDirection = { 0, 5.0f };
-	mColor = { 180, 180 ,180 ,255 };
-	mSpawnLocation = { 200.0f, 400.0f };
+	mColor = { 180, 180 ,100 ,255 };
+	mSpawnLocation = { 150.0f, 250.0f };
 	mHasGravity = true; 
 	mIsGrounded = false;
 	mPowerUpLvl = 1;

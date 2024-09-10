@@ -4,6 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include "Game/Public/GameObjects/Ball.h"
+#include "Game/Public/GameObjects/PowerUpOne.h"
 
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner) : PhysicsComponent(inOwner)
 {
@@ -72,20 +73,19 @@ CollisionResult CircleColliderComponent::CircleCollisionCheck(std::shared_ptr<Ph
 	auto ownerTransformComp = mOwner.lock()->FindComponentOfType<TransformComponent>();
 	auto otherTransformComp = otherCircle->GetOwner().lock()->FindComponentOfType<TransformComponent>();
 
-	if (ownerTransformComp && otherTransformComp) {
-		//Attempt to get the circle collider and validate; tried ! and it doesnt work
-		std::shared_ptr<CircleColliderComponent> otherCircleCollider = std::dynamic_pointer_cast<CircleColliderComponent>(otherCircle);
-		if (!otherCircleCollider ) {
-			 return inResultToReturn;
-		}
+	if (!ownerTransformComp && otherTransformComp) return inResultToReturn;
 
-		exVector2 vectorBetweenCenters = ownerTransformComp->GetPosition() - otherTransformComp->GetPosition();
+	//Attempt to get the circle collider and validate; tried ! and it doesnt work
+	std::shared_ptr<CircleColliderComponent> otherCircleCollider = std::dynamic_pointer_cast<CircleColliderComponent>(otherCircle);
+	
+	exVector2 vectorBetweenCenters = ownerTransformComp->GetPosition() - otherTransformComp->GetPosition();
 
-		float distanceBetweenCircles = std::sqrt(vectorBetweenCenters.x * vectorBetweenCenters.x + vectorBetweenCenters.y * vectorBetweenCenters.y);
+	float distanceBetweenCircles = std::sqrt(vectorBetweenCenters.x * vectorBetweenCenters.x + vectorBetweenCenters.y * vectorBetweenCenters.y);
 
-		if (distanceBetweenCircles <= (mRadius + otherCircleCollider->mRadius)) {
-			return inResultToReturn;  // For simplicity, assuming a top collision for now
-		}
+	if (distanceBetweenCircles <= (mRadius + otherCircleCollider->mRadius)) {
+		inResultToReturn.mHitPoint = (ownerTransformComp->GetPosition() + otherTransformComp->GetPosition()) * 0.5f;  // Midpoint of the two circles
+		inResultToReturn.mCollisionSide = CollisionSide::Top; // top placeholder to bypass sending the collision event
+		return inResultToReturn;  // For simplicity, assuming a top collision for now
 	}
 
 	return inResultToReturn;

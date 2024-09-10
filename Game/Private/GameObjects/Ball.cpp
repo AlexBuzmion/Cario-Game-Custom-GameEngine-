@@ -59,7 +59,7 @@ void Ball::Tick(float deltaTime)
 		}
 		else {
 			// Stop the jump when the target height is reached
-			ENGINE_PRINT("Falling", 300, 60);
+			ENGINE_PRINT("Falling", 300, 70);
 			mIsJumping = false;
 			mIsFalling = true;
 			mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, 0 });
@@ -117,8 +117,12 @@ bool Ball::IsJumping() const
 
 void Ball::OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObject> otherObjectHit)
 {
+	mCollisionPoint = inResults.mHitPoint; // for debugging purposes
 	if (!otherObjectHit.expired()) {
-		if (std::shared_ptr<PowerUpOne> player = std::dynamic_pointer_cast<PowerUpOne>(otherObjectHit.lock())) {
+		std::shared_ptr<GameObject> hitObject = otherObjectHit.lock();
+		ENGINE_PRINT(typeid(*hitObject).name(), 200, 450); // Check what class this object actually is
+
+		if (std::shared_ptr<PowerUpOne> mushroom = std::dynamic_pointer_cast<PowerUpOne>(otherObjectHit.lock())) {
 			mPowerUpLvl += 1;
 			mTransform->SetScale({ 2,2 });
 		}
@@ -154,7 +158,7 @@ void Ball::OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObje
 					ENGINE_PRINT("Ball hit the bottom of a box", 10.0f, 40.0f);
 					mIsFalling = true;
 					mIsJumping = false;
-					
+					enemy->Interact();
 				}
 				break;
 
