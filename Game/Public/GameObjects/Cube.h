@@ -17,7 +17,7 @@ public:
 	virtual void BeginPlay();
 	virtual void EndPlay();
 
-	void Interact(); 
+	void Interact(int playerLvl);
 	void SetPowerUp(const std::shared_ptr<PowerUpOne> inPowerUp); 
 protected:
 
@@ -32,6 +32,7 @@ private:
 	exColor mColor; 
 	bool mHasGravity; 
 	bool mIsStatic; 
+	bool mBumped;
 	ObjectType mType; 
 	exVector2 mDirection;
 	std::shared_ptr<PowerUpOne> mPowerup; 

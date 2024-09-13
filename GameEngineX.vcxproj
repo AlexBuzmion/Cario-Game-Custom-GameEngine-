@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Public\Singletons\CameraManager.h" />
     <ClInclude Include="Game\Public\Components\PhysicsComponents\BoxColliderComponent.h" />
     <ClInclude Include="Game\Public\GameObjects\Cube.h" />
     <ClInclude Include="Game\Public\Components\RenderComponents\BoxRenderComponent.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="Game\Public\GameObjects\PowerUpOne.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Private\Singletons\CameraManager.cpp" />
     <ClCompile Include="Game\Private\Components\PhysicsComponents\BoxColliderComponent.cpp" />
     <ClCompile Include="Game\Private\GameObjects\Cube.cpp" />
     <ClCompile Include="Game\Private\Components\RenderComponents\BoxRenderComponent.cpp" />

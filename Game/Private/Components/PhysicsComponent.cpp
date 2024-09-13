@@ -1,6 +1,7 @@
 #include "Game/Public/Components/PhysicsComponent.h"
 #include "Game/Public/GameObject.h"
 #include "Game/Public/GameObjects/Ball.h"
+#include "Game/Public/GameObjects/PowerUpOne.h"
 #include "Game/Public/Singletons/PhysicsEngine.h"
 #include <cassert>
 
@@ -11,7 +12,7 @@ PhysicsComponent::~PhysicsComponent()
 
 PhysicsComponent::PhysicsComponent(std::shared_ptr<GameObject> mOwner) : Component(mOwner)
 {
-	mIsStatic = true; 
+	mIsStatic = false; 
 	mHasGravity = false; 
 	mVelocity = exVector2(0.0f, 0.0f);
 }
@@ -56,12 +57,6 @@ void PhysicsComponent::UnregisterListener(OnCollisionEvent eventToRemove)
 	}
 }
 
-bool PhysicsComponent::GetIsGrounded()
-{
-	return false;
-}
-
-
 CollisionResult PhysicsComponent::CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent)
 {
 	return CollisionResult();
@@ -69,7 +64,7 @@ CollisionResult PhysicsComponent::CheckCollision(std::shared_ptr<PhysicsComponen
 
 void PhysicsComponent::Move(float deltaTime)
 {
-	if (mIsStatic) return;
+	if (mIsStatic && !mHasGravity) return;
 	if (mOwner.expired()) return; 
 
 	std::shared_ptr<GameObject> owner = mOwner.lock();
@@ -77,17 +72,37 @@ void PhysicsComponent::Move(float deltaTime)
 	if (std::shared_ptr<TransformComponent> transformComponent = owner->FindComponentOfType<TransformComponent>()) {
 		exVector2 currentPos = transformComponent->GetPosition(); 
 		std::shared_ptr<Ball> ball = std::dynamic_pointer_cast<Ball>(owner);
-		if (!ball) return;
+		if (ball) {
+			if (mHasGravity && !ball->IsJumping()) {
+				mVelocity.y += mGravityConstant * deltaTime; // apply gravity over time
+				//ENGINE_PRINT(std::to_string(mVelocity.y), 10, 80);
+			}
+			if (ball->IsGrounded()) {
+				mVelocity.y = 0;
+			}
+		}
+		std::shared_ptr<PowerUpOne> powerUp = std::dynamic_pointer_cast<PowerUpOne>(owner);
+		if (powerUp) {
+			powerUp->GetPowerUpLvl();
+		}
 
-		if (mHasGravity && !ball->IsJumping()) {
-			mVelocity.y += mGravityConstant * deltaTime; // apply gravity over time
-			ENGINE_PRINT(std::to_string(mVelocity.y), 10, 80);
-		}
-		if (ball->IsGrounded()) {
-			mVelocity.y = 0;
-		}
+		// Calculate the new position and movement delta
+		exVector2 movementDelta;
 		exVector2 newPosition = currentPos + mVelocity;
+		movementDelta = newPosition - currentPos;  // Calculate how much the object moved
+
+		// Apply the new position
 		transformComponent->SetPosition(newPosition);
+
+		// Update the collider bounds (important!)
+		if (std::shared_ptr<BoxColliderComponent> boxCollider = std::dynamic_pointer_cast<BoxColliderComponent>(owner->FindComponentOfType<BoxColliderComponent>())) {
+			boxCollider->UpdateColliderBounds();
+		}
+
+		// Broadcast the movement delta to listeners
+		transformComponent->BroadcastMovement(movementDelta);  // Update this function to take movementDelta
+
+
 	}
 }
 

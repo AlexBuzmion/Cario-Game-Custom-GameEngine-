@@ -6,6 +6,8 @@
 #include "Engine/Public/SDL.h"
 #include "Game/Public/Singletons/RenderEngine.h"
 #include "Game/Public/Singletons/PhysicsEngine.h"
+#include "Game/Public/Singletons/CameraManager.h"
+#include "Game/Public/Utils.h"
 
 //-----------------------------------------------------------------
 // defining the window name globally for easy reference across the game
@@ -56,29 +58,32 @@ void Cario::Initialize(exEngineInterface* pEngine)
 	mTextPosition.y = 50.0f;
 	// world objects 
 	
-	mFloor1 = std::make_shared<Cube>(exVector2 {400.0f, 550.0f}, exColor{ 125, 10, 10, 255 }, false, true, exVector2 {50.0f, 550.0f}, exVector2 {750.0f, 600.0f}, ObjectType::Brick);
+	mFloor1 = std::make_shared<Cube>(exVector2 {400.0f, 550.0f}, exColor{ 125, 10, 10, 255 }, false, false, exVector2 {50.0f, 550.0f}, exVector2 {750.0f, 600.0f}, ObjectType::Brick);
 	mFloor1->BeginPlay();
-	mWall1 = std::make_shared<Cube>(exVector2{ 75.0f, 500.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 500.0f }, exVector2{ 100.0f, 550.0f }, ObjectType::Brick);
-	mWall1->BeginPlay();
-	mWall2 = std::make_shared<Cube>(exVector2{ 725.0f, 500.0f }, exColor{ 125, 125, 125, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	mWall1 = std::make_shared<Cube>(exVector2{ 75.0f, 500.0f }, exColor{ 125, 125, 125, 255 }, false, false, exVector2{ 50.0f, 500.0f }, exVector2{ 100.0f, 550.0f }, ObjectType::Brick);
+	//mWall1->BeginPlay();
+	mWall2 = std::make_shared<Cube>(exVector2{ 725.0f, 500.0f }, exColor{ 125, 125, 125, 255 }, false, false, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mWall2->BeginPlay();
-	mBreakable1 = std::make_shared<Cube>(exVector2{ 250.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	mBreakable1 = std::make_shared<Cube>(exVector2{ 250.0f, 350.0f }, exColor{ 125, 10, 10, 255 }, false, false, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable1->BeginPlay();
-	mBreakable2 = std::make_shared<Cube>(exVector2{ 300.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	mBreakable2 = std::make_shared<Cube>(exVector2{ 300.0f, 350.0f }, exColor{ 125, 10, 10, 255 }, false, false, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable2->BeginPlay();	
-	powerUpBox = std::make_shared<Cube>(exVector2{ 350.0f, 300.0f }, exColor{ 200, 200, 0, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::PowerUpBox);
+	powerUpBox = std::make_shared<Cube>(exVector2{ 350.0f, 350.0f }, exColor{ 200, 200, 0, 255 }, false, false, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::PowerUpBox);
 	powerUpBox->BeginPlay();
-	mBreakable4 = std::make_shared<Cube>(exVector2{ 400.0f, 300.0f }, exColor{ 125, 10, 10, 255 }, false, true, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
+	mBreakable4 = std::make_shared<Cube>(exVector2{ 400.0f, 350.0f }, exColor{ 125, 10, 10, 255 }, false, false, exVector2{ 50.0f, 50.0f }, exVector2{ 100.0f, 100.0f }, ObjectType::Brick);
 	mBreakable4->BeginPlay();
 	// character 
 	Character = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,200.0f }, 25.0f, exColor{ 180, 10, 10,255 }, true);
 	Character->BeginPlay();
 	// collision checks 
-	mCollisionPoint = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,400.0f }, 5.0f, exColor{ 10, 10, 180,255 }, false);
-	mCollisionPoint->BeginPlay();
+	/*mCollisionPoint = std::make_shared<Ball>(exVector2{ 0.0f,0.0f }, exVector2{ 200.0f,400.0f }, 5.0f, exColor{ 10, 10, 180,255 }, false);
+	mCollisionPoint->BeginPlay();*/
 	mMushroom = std::make_shared<PowerUpOne>();
 	mMushroom->BeginPlay();
 	powerUpBox->SetPowerUp(mMushroom);
+
+	CAMERA_MANAGER.FollowObject(Character->FindComponentOfType<TransformComponent>());
+
 }
 
 //-----------------------------------------------------------------
@@ -146,52 +151,63 @@ void Cario::OnEventsConsumed()
 void Cario::Run(float fDeltaT)
 {
 	Character->Tick(fDeltaT);
-
+	exVector2 charPos = Character->FindComponentOfType<TransformComponent>()->GetPosition();
+	float charCollider = Character->FindComponentOfType<CircleColliderComponent>()->GetColliderRadius();
+	
 	// drawing the text at the current position with a specific color
 	exColor c;
 	c.mColor[0] = 25;   // green color for text
 	c.mColor[1] = 255;
 	c.mColor[2] = 0;
 	c.mColor[3] = 255;
-	
-	// for powerup implementation later on. 
-	if (mInputManager.GetState().IsAttack())
-	{
+
+	if (charPos.x - charCollider > 0) {
+		// for powerup implementation later on. 
+		if (mInputManager.GetState().IsAttack()) {
 		
-	}
+		}
 
-	if (mInputManager.GetState().IsJumpPressed())
-	{
-		Character->Jump();
-	}
+		if (mInputManager.GetState().IsJumpPressed()) {
+			Character->Jump();
+		}
 
-	if (mInputManager.GetState().IsDownPressed())
-	{
+		if (mInputManager.GetState().IsDownPressed()) {
 		
-	}
+		}
 
-	if (mInputManager.GetState().IsForwardPressed()) {
-		Character->MoveDirection(4.0f);  // Move right
-	}
-	else if (mInputManager.GetState().IsBackwardPressed()) {
-		Character->MoveDirection(-4.0f);  // Move left
+		if (mInputManager.GetState().IsForwardPressed()) {
+			Character->MoveDirection(4.0f);  // Move right
+			if (mInputManager.GetState().IsJumpPressed()) {
+				Character->Jump();
+			}
+		}
+		else if (mInputManager.GetState().IsBackwardPressed()) {
+			Character->MoveDirection(-4.0f);  // Move left
+		}
+		else {
+			Character->MoveDirection(0.0f);  // No input, stop movement
+		}
 	}
 	else {
 		Character->MoveDirection(0.0f);  // No input, stop movement
+		if (mInputManager.GetState().IsForwardPressed()) {
+			Character->MoveDirection(4.0f);  // Move right
+		}
 	}
-
-	/*if (Character->IsGrounded())
-	{
-		charPhysics->SetVelocity({ charPhysics->GetVelocity().x, 0});
-	}*/
-	//charPhysics->SetVelocity(accumulatedVelocity); // Apply all velocity accumulated here
 
 	//mEngine->DrawText(mFontID, mTextPosition, "Super", c, 0); // rendering the text with the font and position
 	//mEngine->DrawText(mFontID, (mTextPosition + exVector2 {0.0f, 30.0f}), "Cario", c, 0); // rendering the text with the font and position
 	
-	RENDER_ENGINE.Render(mEngine);
+	RENDER_ENGINE.Render(mEngine, false);
 	PHYSICS_ENGINE.SimulatePhysics(fDeltaT);
-	
-	mCollisionPoint->FindComponentOfType<TransformComponent>()->SetPosition(Character->GetCollisionPoint());
+
+	/*mCollisionPoint->FindComponentOfType<TransformComponent>()->SetPosition(Character->GetCollisionPoint());*/
 	mMushroom->Tick(fDeltaT);
+	mBreakable1->Tick(fDeltaT);
+	mBreakable2->Tick(fDeltaT);
+	powerUpBox->Tick(fDeltaT);
+	mBreakable4->Tick(fDeltaT);
+	ENGINE_PRINT("brick 1 X: " + std::to_string(mBreakable1->FindComponentOfType<TransformComponent>()->GetPosition().x), 500, 40);
+	ENGINE_PRINT("brick 2 X: " + std::to_string(mBreakable2->FindComponentOfType<TransformComponent>()->GetPosition().x), 500, 70);
+	ENGINE_PRINT("brick 3 X: " + std::to_string(mBreakable4->FindComponentOfType<TransformComponent>()->GetPosition().x), 500, 100);
 }

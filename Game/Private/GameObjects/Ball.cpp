@@ -30,6 +30,7 @@ Ball::Ball(exVector2 inDirection, exVector2 inSpawnLocation, float inColliderRad
 	mCollisionPoint = { 0,0 };
 	mOriginalPosition = { 0,0 };
 	mTargetPosition = { 0,0 };
+	mPowerUpLvl = 0;
 }
 
 Ball::Ball(exVector2 inDirection, exVector2 inSpawnLocation, float inColliderRadius, exColor inColor, bool inHasGravity)
@@ -44,6 +45,7 @@ Ball::Ball(exVector2 inDirection, exVector2 inSpawnLocation, float inColliderRad
 	mCollisionPoint = { 0,0 };
 	mOriginalPosition = { 0,0 };
 	mTargetPosition = { 0,0 };
+	mPowerUpLvl = 0;
 }
 
 void Ball::Tick(float deltaTime)
@@ -66,7 +68,7 @@ void Ball::Tick(float deltaTime)
 			mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, 0 });
 		}
 	}
-
+	
 	// Check if the ball fell off the screen
 	if (currentPosition.y >= 600.0f)
 	{
@@ -74,6 +76,7 @@ void Ball::Tick(float deltaTime)
 		ENGINE_PRINT("You died", 250, 200);
 		mTransform->SetPosition({ currentPosition.x, 600 });
 	}
+
 }
 
 void Ball::BeginPlay()
@@ -118,19 +121,23 @@ bool Ball::IsJumping() const
 
 void Ball::OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObject> otherObjectHit)
 {
+	
 	mCollisionPoint = inResults.mHitPoint; // for debugging purposes
 	if (!otherObjectHit.expired()) {
 		std::shared_ptr<GameObject> hitObject = otherObjectHit.lock();
-		ENGINE_PRINT(typeid(*hitObject).name(), 200, 450); // Check what class this object actually is
-
+		//ENGINE_PRINT(typeid(*hitObject).name(), 200, 450); // Check what class this object actually is
+		
 		if (std::shared_ptr<PowerUpOne> mushroom = std::dynamic_pointer_cast<PowerUpOne>(otherObjectHit.lock())) {
-			mPowerUpLvl += 1;
-			mTransform->SetScale({ 2,2 });
+			if (inResults.mCollisionSide != CollisionSide::None) {
+				mPowerUpLvl += 1;
+				AnimateGrowing();
+				return;
+			}
 		}
 
-		if (std::shared_ptr<Ball> player = std::dynamic_pointer_cast<Ball>(otherObjectHit.lock())) {
+		/*if (std::shared_ptr<Ball> player = std::dynamic_pointer_cast<Ball>(otherObjectHit.lock())) {
 			ENGINE_PRINT("Collided with ball", 10, 40);
-		}
+		}*/
 		if (std::shared_ptr<Cube> enemy = std::dynamic_pointer_cast<Cube>(otherObjectHit.lock())) {
 			// Handle collisions based on the side hit
 			switch (inResults.mCollisionSide) {
@@ -155,11 +162,13 @@ void Ball::OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObje
 			case CollisionSide::Bottom:
 				if (!mIsGrounded && mIsJumping) {
 					mTransform->SetPosition(inResults.mHitPoint + exVector2{ 0, + mColliderRadius }); // Place ball below cube
-					mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, 0 });
-					ENGINE_PRINT("Ball hit the bottom of a box", 10.0f, 40.0f);
+					mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, 1 });
+					ENGINE_PRINT("Ball hit the bottom of a box", 10.0f, 60.0f);
 					mIsFalling = true;
 					mIsJumping = false;
-					enemy->Interact();
+					std::weak_ptr<GameObject> sendThis = mPhysicsComponent->GetOwner();
+					enemy->Interact(mPowerUpLvl);
+					
 				}
 				break;
 
@@ -170,24 +179,25 @@ void Ball::OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObje
 					}
 					mTransform->SetPosition(inResults.mHitPoint + exVector2{ -mColliderRadius, 0 }); // Place ball on the  right cube
 					mPhysicsComponent->SetVelocity(exVector2{ 0, mPhysicsComponent->GetVelocity().y });
-					ENGINE_PRINT("Ball hit left side of the box", 10.0f, 40.0f);
+					ENGINE_PRINT("Ball hit left side of the box", 10.0f, 80.0f);
 				}
 				break;
 			case CollisionSide::Right:
 				if (mPhysicsComponent->GetVelocity().x < 0) {
 					mTransform->SetPosition(inResults.mHitPoint + exVector2{ +mColliderRadius, 0 }); // Place ball on the left cube
 					mPhysicsComponent->SetVelocity(exVector2{ 0, mPhysicsComponent->GetVelocity().y });
-					ENGINE_PRINT("Ball hit right side of the box", 10.0f, 40.0f);
+					ENGINE_PRINT("Ball hit right side of the box", 10.0f, 100.0f);
 				}
-				break;
-
-			case CollisionSide::None:
-				mIsGrounded = false;
 				break;
 			
 			default:
 				break;
 			}
+			return;
+		}
+		if (inResults.mCollisionSide == CollisionSide::None && !mIsGrounded) {
+			mIsGrounded = false;
+			return;
 		}
 	}
 }
@@ -200,6 +210,9 @@ exVector2 Ball::GetCollisionPoint() const
 void Ball::Jump()
 {
 	if (!mIsGrounded || mIsJumping) return;  // Prevent jumping if already jumping or not grounded
+	mIsJumping = true;
+	mIsGrounded = false;
+	mIsFalling = false;
 
 	// Store the original position when the jump starts
 	exVector2 currentPosition = mTransform->GetPosition();
@@ -211,10 +224,16 @@ void Ball::Jump()
 
 	// Apply the initial jump force to kick off the jump
 	mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, -mJumpForce }); // Smaller jump force applied over time
-	mIsJumping = true;
-	mIsGrounded = false;
-	mIsFalling = false;
 
+}
+
+void Ball::Death()
+{
+}
+
+void Ball::AnimateGrowing()
+{
+	mTransform->SetScale({ 2,2 });
 }
 
 void Ball::MoveDirection(float directionX)

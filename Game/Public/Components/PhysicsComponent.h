@@ -36,7 +36,6 @@ public:
 
 	void RegisterListener(OnCollisionEvent eventToAdd);
 	void UnregisterListener(OnCollisionEvent eventToRemove);
-	virtual bool GetIsGrounded();
 	virtual CollisionResult CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent);
 	virtual void Move(float deltaTime); // Todo: Implement Physics Engine and move to protected
 

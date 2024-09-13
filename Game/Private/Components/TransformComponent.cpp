@@ -1,4 +1,5 @@
 #include "Game/Public/Components/TransformComponent.h"
+#include "Game/Public/Singletons/CameraManager.h"
 
 TransformComponent::~TransformComponent()
 {
@@ -33,7 +34,10 @@ exVector2 TransformComponent::GetPosition() const
 
 void TransformComponent::SetPosition(const exVector2& newPosition)
 {
-	mPosition = newPosition; // Updates the GameObject's position.
+	// Only broadcast if the position actually changed
+	if (mPosition.x != newPosition.x || mPosition.y != newPosition.y) {
+		mPosition = newPosition;
+	}
 }
 
 exVector2 TransformComponent::GetScale() const
@@ -46,6 +50,19 @@ void TransformComponent::SetScale(const exVector2& newScale)
 	mScale = newScale; 
 }
 
+void TransformComponent::RegisterMovementListener(OnMovementEvent listenerToAdd)
+{
+	mMovementEvents.push_back(listenerToAdd);
+}
+
+void TransformComponent::BroadcastMovement(exVector2 inNewPos)
+{
+	for (OnMovementEvent& event : mMovementEvents) {
+		event(mPosition); 
+	}
+}
+
 void TransformComponent::InitializeComponent()
 {
+	CAMERA_MANAGER.AddTransformComponent(shared_from_this());
 }

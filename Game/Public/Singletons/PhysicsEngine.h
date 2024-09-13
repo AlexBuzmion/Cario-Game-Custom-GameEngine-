@@ -4,7 +4,6 @@
 #define PHYSICS_ENGINE PhysicsEngine::GetInstance() // macro to easily access the singleton instance of the RenderEngine
 
 class exEngineInterface;
-class PhysicsComponent;
 
 class PhysicsEngine
 {

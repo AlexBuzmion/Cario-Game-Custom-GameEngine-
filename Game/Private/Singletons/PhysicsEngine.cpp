@@ -1,9 +1,10 @@
 #include "Game/Public/Singletons/PhysicsEngine.h"
-#include "Game/Public/Components/PhysicsComponent.h"
 #include "Game/Public/GameObject.h"
 #include "Game/Public/GameObjects/Ball.h"
 #include <thread>
+
 std::unique_ptr<PhysicsEngine> PhysicsEngine::sInstance = nullptr;
+
 PhysicsEngine::PhysicsEngine()
 {
 }
@@ -74,16 +75,17 @@ void PhysicsEngine::Collide(float deltaTime)
 			std::shared_ptr<PhysicsComponent> currentComponent = physicsComponentIter.lock();
 			std::shared_ptr<PhysicsComponent> otherComponent = otherphysicsComponentIter.lock();
 
-			if (currentComponent == otherComponent || !currentComponent || !otherComponent) continue;
+			if (currentComponent == otherComponent) continue;
+			if (!currentComponent || !otherComponent) continue;
             
 			CollisionResult collisionData = currentComponent->CheckCollision(otherComponent);
 
             if (collisionData.mCollisionSide != CollisionSide::None) {
-                // iterates over all the events and send the collision update
+                 //iterates over all the events and send the collision update
                 for (OnCollisionEvent& collisionEvent : currentComponent->mCollisionEvents) {
                     collisionEvent(collisionData, otherComponent->GetOwner());
                 }
-            }
+			}
 		}
 	}
 }

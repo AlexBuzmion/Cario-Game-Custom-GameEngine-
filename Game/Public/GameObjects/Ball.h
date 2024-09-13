@@ -29,7 +29,8 @@ public:
 
 	// Character movement
 	void Jump(); 
-
+	void Death();
+	void AnimateGrowing();
 	void MoveDirection(float directionX); 
 
 private:

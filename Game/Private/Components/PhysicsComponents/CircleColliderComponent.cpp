@@ -9,31 +9,28 @@
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner) : PhysicsComponent(inOwner)
 {
 	mRadius = 15.0f;
-	mIsGrounded = false;
 }
 
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic) : PhysicsComponent(inOwner, inIsStatic)
 {
 	mRadius = 15.0f;
-	mIsGrounded = false;
 }
 
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, float inRadius) : PhysicsComponent(inOwner, inIsStatic)
 {
 	mRadius = inRadius;
-	mIsGrounded = false;
 }
 
 CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, float inRadius, bool inHasGravity, exVector2 inVelocity) : PhysicsComponent(inOwner, inIsStatic, inHasGravity, inVelocity)
 {
 	mRadius = inRadius;
-	mIsGrounded = false;
 }
 
-bool CircleColliderComponent::GetIsGrounded()
+float CircleColliderComponent::GetColliderRadius() const
 {
-	return mIsGrounded;
+	return mRadius;
 }
+
 
 void CircleColliderComponent::InitializeComponent()
 {
@@ -111,8 +108,8 @@ CollisionResult CircleColliderComponent::BoxCollisionCheck(std::shared_ptr<Physi
         // Box dimensions
         float boxX = boxPoint1.x;
         float boxY = boxPoint1.y;
-        float boxWidth = std::abs(boxPoint2.x - boxPoint1.x);
-        float boxHeight = std::abs(boxPoint2.y - boxPoint1.y);
+        float boxWidth = otherBoxCollider->GetBoxWidth();
+		float boxHeight = otherBoxCollider->GetBoxHeight();
 
         // Find the closest point on the box to the circle
         float testX = std::clamp(circleCenter.x, boxX, boxX + boxWidth);

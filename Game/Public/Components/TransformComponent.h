@@ -10,8 +10,11 @@
 // that requires spatial manipulation.
 //-----------------------------------------------------------------
 
-class TransformComponent : public Component
+typedef std::function<void(exVector2)> OnMovementEvent;
+
+class TransformComponent : public Component, public std::enable_shared_from_this<TransformComponent> 
 {
+	friend class CameraManager;
 public:
 	// deleting the default constructor to ensure that every TransformComponent is associated with a specific GameObject and initialized with meaningful data
 	TransformComponent() = delete;
@@ -31,6 +34,10 @@ public:
 	exVector2 GetScale() const; 
 	void SetScale(const exVector2& newScale);
 
+	void RegisterMovementListener(OnMovementEvent listenerToAdd);
+
+	void BroadcastMovement(exVector2 inNewPos);
+
 	// add a function update transform based on camera offset 
 protected: 
 	virtual void InitializeComponent() override; 
@@ -44,4 +51,6 @@ private:
 
 	// defines the rotation of the GameObject in the game world
 	exVector2 mRotation;
+
+	std::vector<OnMovementEvent> mMovementEvents; 
 };

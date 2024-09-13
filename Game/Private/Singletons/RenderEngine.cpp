@@ -21,12 +21,20 @@ RenderEngine& RenderEngine::GetInstance()
 	return *sInstance; // Return a reference to the singleton instance.
 }
 
-void RenderEngine::Render(exEngineInterface* renderEngine)
+void RenderEngine::Render(exEngineInterface* renderEngine, bool RenderCollider)
 {
 	// Iterate through all registered render components.
 	for (std::weak_ptr<RenderComponent> componentToRender : mRenderComponentList) {
 		if (!componentToRender.expired()) {
 			std::shared_ptr<RenderComponent> renderComponent = componentToRender.lock();
+			// If RenderCollider is false, skip rendering collider-specific components.
+			if (!RenderCollider) {
+				if (std::dynamic_pointer_cast<CircleLineRender>(renderComponent) ||
+					std::dynamic_pointer_cast<BoxLineRender>(renderComponent)) {
+					continue; // Skip rendering the collider components
+				}
+			}
+
 			componentToRender.lock()->Render(renderEngine); // Lock the weak pointer and call Render if the component is still valid.
 		}
 	}

@@ -26,6 +26,10 @@ struct exVector2
 	exVector2 operator*(const float& other) {
 		return exVector2(x * other, y * other);
 	}
+
+	/*exVector2 operator==(const exVector2& other) {
+		return 
+	}*/
 };
 
 //-----------------------------------------------------------------

@@ -6,6 +6,7 @@
 #include <functional>
 #include <cmath>
 #include <string>
+#include <sstream>
 
 #define LOG(X) std::cout << X
 #define LOG_LINE(X) std::cout << X << std::endl

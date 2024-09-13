@@ -1,11 +1,11 @@
 #pragma once
 #include "Game/Public/Utils.h"
-
+#include "Game/Public/Components/RenderComponents/BoxLineRender.h"
+#include "Game/Public/Components/RenderComponents/CircleLineRender.h"
 #define RENDER_ENGINE RenderEngine::GetInstance() // macro to easily access the singleton instance of the RenderEngine
 
 class exEngineInterface;
 class RenderComponent;
-class CircleLineRender;
 //-----------------------------------------------------------------
 // RenderEngine Class
 // Manages the rendering process for all renderable components in the game.
@@ -23,7 +23,7 @@ public:
 	static RenderEngine& GetInstance();
 
 	// iterates over all registered rendering components and calls their Render function
-	void Render(exEngineInterface* renderEngine);
+	void Render(exEngineInterface* renderEngine, bool RenderCollider);
 
 	// adds a rendering component to the list of components managed by the RenderEngine
 	void AddRenderingComponent(std::shared_ptr<RenderComponent> renderingComponentToAdd);

@@ -16,6 +16,7 @@ public:
 	int GetPowerUpLvl();
 	void AnimateSpawn();
 	void Move();
+	void SetGravity(const bool& inGravity);
 
 	std::shared_ptr<TransformComponent> mTransform; 
 	std::shared_ptr<CircleRenderComponent> mCircleRenderComponent; 
