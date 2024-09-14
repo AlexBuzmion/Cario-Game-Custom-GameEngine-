@@ -1,6 +1,8 @@
 #include "Game/Public/Singletons/RenderEngine.h"
 #include "Game/Public/Components/RenderComponent.h"
 #include "Engine/Public/EngineInterface.h"
+#include "Engine/Public/SDL.h"
+
 
 std::unique_ptr<RenderEngine> RenderEngine::sInstance = nullptr; // Initialize the static instance pointer to nullptr.
 
@@ -23,6 +25,7 @@ RenderEngine& RenderEngine::GetInstance()
 
 void RenderEngine::Render(exEngineInterface* renderEngine, bool RenderCollider)
 {
+
 	// Iterate through all registered render components.
 	for (std::weak_ptr<RenderComponent> componentToRender : mRenderComponentList) {
 		if (!componentToRender.expired()) {

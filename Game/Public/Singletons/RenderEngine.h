@@ -2,6 +2,8 @@
 #include "Game/Public/Utils.h"
 #include "Game/Public/Components/RenderComponents/BoxLineRender.h"
 #include "Game/Public/Components/RenderComponents/CircleLineRender.h"
+#include "Game/Public/Components/RenderComponents/SpriteRenderComponent.h"
+
 #define RENDER_ENGINE RenderEngine::GetInstance() // macro to easily access the singleton instance of the RenderEngine
 
 class exEngineInterface;

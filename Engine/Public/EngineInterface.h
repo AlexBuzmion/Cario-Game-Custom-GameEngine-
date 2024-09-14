@@ -53,6 +53,8 @@ public:
 	virtual void				DrawText( int nFontID, const exVector2& v2Position, const char* szText, const exColor& color, int nLayer ) = 0;
 
 	virtual int				GetScreenWidth() {return kViewportWidth;}
+
+	virtual void				LoadTexture(const char* filePath) = 0;
 };
 
 //-----------------------------------------------------------------

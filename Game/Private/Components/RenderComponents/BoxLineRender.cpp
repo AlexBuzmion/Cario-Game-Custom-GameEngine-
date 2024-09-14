@@ -13,6 +13,10 @@ BoxLineRender::BoxLineRender(std::shared_ptr<GameObject> owner, exVector2 point1
 void BoxLineRender::Render(exEngineInterface* inEngineInterface)
 {
 	if (mOwner.expired()) return; // Early exit if the owning GameObject is no longer valid.
+	if (auto ownerTransform = mOwner.lock()->FindComponentOfType<BoxColliderComponent>()) {
+		mPoint1 = ownerTransform->GetPoint1();
+		mPoint2 = ownerTransform->GetPoint2();
+	}
 
 	std::shared_ptr<GameObject> owningGameObject = mOwner.lock(); // Lock the weak pointer to get a shared pointer.
 	if (std::shared_ptr<TransformComponent> renderTransformComponent = owningGameObject->FindComponentOfType<TransformComponent>())

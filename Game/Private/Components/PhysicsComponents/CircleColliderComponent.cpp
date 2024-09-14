@@ -26,11 +26,15 @@ CircleColliderComponent::CircleColliderComponent(std::shared_ptr<GameObject> inO
 	mRadius = inRadius;
 }
 
+void CircleColliderComponent::SetColliderRadius(const float& inRadius)
+{
+	mRadius = inRadius;
+}
+
 float CircleColliderComponent::GetColliderRadius() const
 {
 	return mRadius;
 }
-
 
 void CircleColliderComponent::InitializeComponent()
 {
@@ -42,12 +46,13 @@ void CircleColliderComponent::InitializeComponent()
 
 
 
-CollisionResult CircleColliderComponent::CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent)
+CollisionResult CircleColliderComponent::CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent, float deltaTime)
 {
 	// create the result to pass to the collision check and receive back
 	CollisionResult result; 
 	result.mCollisionSide = CollisionSide::None;
 	result.mHitPoint = exVector2{ 0,0 }; 
+	result.deltaTime = deltaTime;
 
 	//// Check if the other component is a CircleCollider
 	if (auto otherCircle = std::dynamic_pointer_cast<CircleColliderComponent>(otherComponent)) {
@@ -56,7 +61,7 @@ CollisionResult CircleColliderComponent::CheckCollision(std::shared_ptr<PhysicsC
 
 	// Check if the other component is a BoxCollider
 	if (auto otherBox = std::dynamic_pointer_cast<BoxColliderComponent>(otherComponent)) {
-		return BoxCollisionCheck(otherBox, result);  // Perform circle-box collision check
+		return BoxCollisionCheck(otherBox, result, deltaTime);  // Perform circle-box collision check
 	}
 
 	return result;  // No collision
@@ -88,7 +93,7 @@ CollisionResult CircleColliderComponent::CircleCollisionCheck(std::shared_ptr<Ph
 	return inResultToReturn;
 }
 
-CollisionResult CircleColliderComponent::BoxCollisionCheck(std::shared_ptr<PhysicsComponent> otherBox, CollisionResult inResultToReturn) const
+CollisionResult CircleColliderComponent::BoxCollisionCheck(std::shared_ptr<PhysicsComponent> otherBox, CollisionResult inResultToReturn, float deltaTime) const
 {
 	
 	auto ownerTransformComp = mOwner.lock()->FindComponentOfType<TransformComponent>();
@@ -101,6 +106,11 @@ CollisionResult CircleColliderComponent::BoxCollisionCheck(std::shared_ptr<Physi
 			return inResultToReturn;
 		}
         auto circleCenter = ownerTransformComp->GetPosition();
+		auto velocity = mOwner.lock()->FindComponentOfType<PhysicsComponent>()->GetVelocity();  // Get ball velocity
+
+		// Predict the next position based on current velocity
+		auto predictedCircleCenter = circleCenter + velocity * deltaTime; // You need to pass deltaTime to this function
+
         // Get box points
         auto boxPoint1 = otherBoxCollider->GetPoint1();
         auto boxPoint2 = otherBoxCollider->GetPoint2();
@@ -111,13 +121,14 @@ CollisionResult CircleColliderComponent::BoxCollisionCheck(std::shared_ptr<Physi
         float boxWidth = otherBoxCollider->GetBoxWidth();
 		float boxHeight = otherBoxCollider->GetBoxHeight();
 
+
         // Find the closest point on the box to the circle
-        float testX = std::clamp(circleCenter.x, boxX, boxX + boxWidth);
-        float testY = std::clamp(circleCenter.y, boxY, boxY + boxHeight);
+        float testX = std::clamp(predictedCircleCenter.x, boxX, boxX + boxWidth);
+        float testY = std::clamp(predictedCircleCenter.y, boxY, boxY + boxHeight);
 
 		inResultToReturn.mHitPoint = exVector2{ testX, testY };
-        float distX = circleCenter.x - testX;
-        float distY = circleCenter.y - testY;
+        float distX = predictedCircleCenter.x - testX;
+        float distY = predictedCircleCenter.y - testY;
         float distance = std::sqrt((distX * distX) + (distY * distY));
 
         if (distance <= mRadius) {
@@ -132,19 +143,13 @@ CollisionResult CircleColliderComponent::BoxCollisionCheck(std::shared_ptr<Physi
 			float minDist = std::min({ distToTop, distToBottom, distToLeft, distToRight });
 
             // Determine collision side
-			if (testY == boxY) {
-				inResultToReturn.mCollisionSide = CollisionSide::Top;
-			}
-			if (testY == boxY + boxHeight) {
-				inResultToReturn.mCollisionSide = CollisionSide::Bottom;
-			}
-			if (testX == boxX) {
-				inResultToReturn.mCollisionSide = CollisionSide::Left;
-			}
-			if (testX == boxX + boxWidth) {
-				inResultToReturn.mCollisionSide = CollisionSide::Right;
-			}
+			if (testY == boxY) { inResultToReturn.mCollisionSide = CollisionSide::Top;}
+			else if (testY == boxY + boxHeight) { inResultToReturn.mCollisionSide = CollisionSide::Bottom;}
+			else if (testX == boxX) { inResultToReturn.mCollisionSide = CollisionSide::Left; }
+			else if (testX == boxX + boxWidth) { inResultToReturn.mCollisionSide = CollisionSide::Right;}
+			else { inResultToReturn.mCollisionSide = CollisionSide::None; }
         }
+
     }
 
     return inResultToReturn;

@@ -48,3 +48,13 @@ struct exColor
 	unsigned char mColor[4];
 };
 
+//-----------------------------------------------------------------
+//-----------------------------------------------------------------
+
+struct exTexture
+{
+	float left;
+	float right;
+	float top;
+	float bottom;
+};

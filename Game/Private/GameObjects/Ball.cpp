@@ -68,6 +68,8 @@ void Ball::Tick(float deltaTime)
 			mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, 0 });
 		}
 	}
+	else {
+	}
 	
 	// Check if the ball fell off the screen
 	if (currentPosition.y >= 600.0f)
@@ -76,7 +78,6 @@ void Ball::Tick(float deltaTime)
 		ENGINE_PRINT("You died", 250, 200);
 		mTransform->SetPosition({ currentPosition.x, 600 });
 	}
-
 }
 
 void Ball::BeginPlay()
@@ -87,22 +88,11 @@ void Ball::BeginPlay()
 	// constructor parameters taken: bool inIsStatic, float inRadius, bool inHasGravity, exVector2 inVelocity
 	mPhysicsComponent = AddComponentOfType<CircleColliderComponent>(false, mColliderRadius, mHasGravity, mDirection);
 	mPhysicsComponent->RegisterListener(std::bind(&Ball::OnCollisionDetected, this, std::placeholders::_1, std::placeholders::_2));
+
+	// to revisit sprite renderer later 
+	//mSpriteRender = AddComponentOfType<SpriteRenderComponent>("Resources/mario.bmp");
 }
 
-bool Ball::IsGrounded() const
-{
-	return mIsGrounded;
-}
-
-void Ball::SetGrounded(const bool& inIsGrounded)
-{
-	mIsGrounded = inIsGrounded;
-}
-
-void Ball::CheckGrounded()
-{
-	
-}
 
 float Ball::GetJumpHeight() const
 {
@@ -126,37 +116,51 @@ void Ball::OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObje
 	if (!otherObjectHit.expired()) {
 		std::shared_ptr<GameObject> hitObject = otherObjectHit.lock();
 		//ENGINE_PRINT(typeid(*hitObject).name(), 200, 450); // Check what class this object actually is
-		
-		if (std::shared_ptr<PowerUpOne> mushroom = std::dynamic_pointer_cast<PowerUpOne>(otherObjectHit.lock())) {
-			if (inResults.mCollisionSide != CollisionSide::None) {
-				mPowerUpLvl += 1;
-				AnimateGrowing();
-				return;
-			}
-		}
 
 		/*if (std::shared_ptr<Ball> player = std::dynamic_pointer_cast<Ball>(otherObjectHit.lock())) {
 			ENGINE_PRINT("Collided with ball", 10, 40);
 		}*/
 		if (std::shared_ptr<Cube> enemy = std::dynamic_pointer_cast<Cube>(otherObjectHit.lock())) {
 			// Handle collisions based on the side hit
+			auto positivePos = mTransform->GetPosition().x + mColliderRadius * 0.5f;
+			auto negativePos = mTransform->GetPosition().x - mColliderRadius * 0.5f;
 			switch (inResults.mCollisionSide) {
 			case CollisionSide::Top:
-				if (!mIsGrounded && !mIsJumping) {
+				/*if (!mIsJumping) {*/
 					// Check if the ball is still supported enough by the box (not past its center)
-					if (inResults.mHitPoint.x <= mTransform->GetPosition().x + mColliderRadius * 0.5f &&
-						inResults.mHitPoint.x >= mTransform->GetPosition().x - mColliderRadius * 0.5f) {
-						mTransform->SetPosition(inResults.mHitPoint + exVector2{ 0, -mColliderRadius }); // Place ball above cube
-						mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, 0 });
-						ENGINE_PRINT("Ball is grounded on top of the box", 10.0f, 40.0f);
+				if (inResults.mHitPoint.x <= positivePos &&
+					inResults.mHitPoint.x >= negativePos) {
+
+					// Place ball above cube
+					mTransform->SetPosition(inResults.mHitPoint + exVector2{ 0, -mColliderRadius });
+					mPhysicsComponent->SetVelocity(exVector2{ mPhysicsComponent->GetVelocity().x, 0 });
+
+					ENGINE_PRINT("Ball is grounded on top of the box", 10.0f, 40.0f);
+
+					// Ball is grounded, reset grounded and falling flags
+					mIsGrounded = true;
+					mIsFalling = false;
+				}
+				else {
+					// Predict the next position of the ball using its velocity
+					exVector2 predictedPosition = mTransform->GetPosition() + (mPhysicsComponent->GetVelocity() * inResults.deltaTime);
+
+					// Check if the predicted position will be off the edge of the box
+					if (predictedPosition.x > inResults.mHitPoint.x + mColliderRadius * 0.5f ||
+						predictedPosition.x < inResults.mHitPoint.x - mColliderRadius * 0.5f) {
+
+						// The ball is predicted to move off the edge, so mark it as falling
+						ENGINE_PRINT("Ball is falling off the edge of the box", 10.0f, 60.0f);
+						mIsGrounded = false;
+						mIsFalling = true;
+					}
+					else {
+						// The ball is still close enough to the box edge, keep it grounded
 						mIsGrounded = true;
 						mIsFalling = false;
 					}
-					else {
-						// The ball is moving off the edge of the box, so it's no longer grounded
-						mIsGrounded = false;
-					}
 				}
+				//}
 				break;
 
 			case CollisionSide::Bottom:
@@ -174,9 +178,6 @@ void Ball::OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObje
 
 			case CollisionSide::Left:
 				if (mPhysicsComponent->GetVelocity().x > 0) {
-					if (inResults.mHitPoint.x >= mTransform->GetPosition().x) {
-						mIsGrounded = false; 
-					}
 					mTransform->SetPosition(inResults.mHitPoint + exVector2{ -mColliderRadius, 0 }); // Place ball on the  right cube
 					mPhysicsComponent->SetVelocity(exVector2{ 0, mPhysicsComponent->GetVelocity().y });
 					ENGINE_PRINT("Ball hit left side of the box", 10.0f, 80.0f);
@@ -190,14 +191,24 @@ void Ball::OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObje
 				}
 				break;
 			
+			case CollisionSide::None :
+				mIsFalling = true;
+				mIsGrounded = false; 
+				break;
+
 			default:
+				
 				break;
 			}
 			return;
 		}
-		if (inResults.mCollisionSide == CollisionSide::None && !mIsGrounded) {
-			mIsGrounded = false;
-			return;
+
+		if (std::shared_ptr<PowerUpOne> mushroom = std::dynamic_pointer_cast<PowerUpOne>(otherObjectHit.lock())) {
+			if (inResults.mCollisionSide != CollisionSide::None) {
+				mPowerUpLvl += 1;
+				AnimateGrowing();
+				return;
+			}
 		}
 	}
 }
@@ -210,8 +221,8 @@ exVector2 Ball::GetCollisionPoint() const
 void Ball::Jump()
 {
 	if (!mIsGrounded || mIsJumping) return;  // Prevent jumping if already jumping or not grounded
-	mIsJumping = true;
 	mIsGrounded = false;
+	mIsJumping = true;
 	mIsFalling = false;
 
 	// Store the original position when the jump starts
@@ -234,12 +245,42 @@ void Ball::Death()
 void Ball::AnimateGrowing()
 {
 	mTransform->SetScale({ 2,2 });
+	mColliderRadius = mColliderRadius * 2;
+	FindComponentOfType<CircleColliderComponent>()->SetColliderRadius(mColliderRadius);
 }
 
-void Ball::MoveDirection(float directionX)
+void Ball::MoveDirection(float directionX, float deltaTime)
 {
 	// Add to the current x velocity instead of setting it directly
 	exVector2 currentVelocity = mPhysicsComponent->GetVelocity();
-	currentVelocity.x = directionX;  // Add horizontal movement
-	mPhysicsComponent->SetVelocity(currentVelocity);  // Set the new velocity
+	float maxSpeed = 4.0f;
+	float accelerator = 6.0f;
+	// Handle movement based on input direction
+	if (directionX != 0) {
+		// Accelerate if moving in any direction
+		currentVelocity.x += directionX * deltaTime * 2.0f;  // Accelerate based on direction and deltaTime
+
+		// Clamp the velocity within the -4 to +4 range
+		if (currentVelocity.x > maxSpeed) {
+			currentVelocity.x = maxSpeed;
+		}
+		else if (currentVelocity.x < -maxSpeed) {
+			currentVelocity.x = -maxSpeed;
+		}
+	}
+	else {
+		// Decelerate when no input is given
+		if (currentVelocity.x > 0) {
+			currentVelocity.x -= deltaTime * accelerator;  // Slow down to the right
+			if (currentVelocity.x < 0) currentVelocity.x = 0;  // Clamp to zero when stopping
+		}
+		else if (currentVelocity.x < 0) {
+			currentVelocity.x += deltaTime * accelerator;  // Slow down to the left
+			if (currentVelocity.x > 0) currentVelocity.x = 0;  // Clamp to zero when stopping
+		}
+	}
+	ENGINE_PRINT("Velocity.x = " + std::to_string(currentVelocity.x), 40, 20);
+	ENGINE_PRINT("Velocity.y = " + std::to_string(currentVelocity.y), 40, 5);
+	// Set the new velocity in the physics component
+	mPhysicsComponent->SetVelocity(currentVelocity);
 }

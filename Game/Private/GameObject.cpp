@@ -24,3 +24,13 @@ void GameObject::Tick(float deltaTime)
 {
 	LOG_LINE("Game Object Tick called");
 }
+
+void GameObject::SetIsGrounded(const bool& inGrounded)
+{
+	mIsGrounded = inGrounded;
+}
+
+bool GameObject::GetGrounded() const
+{
+	return mIsGrounded;
+}

@@ -13,12 +13,9 @@ public:
 	~Ball();
 	Ball(exVector2 inDirection, exVector2 inSpawnLocation, float inColliderRadius, exColor inColor);
 	Ball(exVector2 inDirection, exVector2 inSpawnLocation, float inColliderRadius, exColor inColor, bool inHasGravity);
+	
 	virtual void Tick(float deltaTime);
 	virtual void BeginPlay();
-	
-	bool IsGrounded() const;
-	void SetGrounded(const bool& inIsGrounded); 
-	void CheckGrounded(); 
 
 	float GetJumpHeight() const;
 	void SetJumpHeight(const float& inNewJumpHeight);
@@ -31,13 +28,13 @@ public:
 	void Jump(); 
 	void Death();
 	void AnimateGrowing();
-	void MoveDirection(float directionX); 
+	void MoveDirection(float directionX, float deltaTime);
 
 private:
 
 	std::shared_ptr<TransformComponent> mTransform;
 	std::shared_ptr<CircleRenderComponent> mCircleRenderComponent;
-
+	std::shared_ptr<SpriteRenderComponent> mSpriteRender;
 	std::shared_ptr<PhysicsComponent> mPhysicsComponent;
 	
 	exVector2 mSpawnLocation;
@@ -48,7 +45,6 @@ private:
 	int mPowerUpLvl;
 
 	// movement
-	bool mIsGrounded = false;
 	bool mIsJumping = false;
 	bool mIsFalling = false;
 	exVector2 mDirection;

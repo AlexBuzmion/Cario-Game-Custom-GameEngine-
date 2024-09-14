@@ -58,10 +58,20 @@ void CameraManager::FollowObject(std::shared_ptr<TransformComponent> objectToFol
 		std::bind(&CameraManager::OnFollowObjectMoved, this, std::placeholders::_1));
 }
 
+void CameraManager::BoundaryObject(std::shared_ptr<TransformComponent> objectBounds)
+{
+	mBoundary = objectBounds;
+}
+
 
 void CameraManager::AddTransformComponent(std::shared_ptr<TransformComponent> transformToAdd)
 {
-	if (transformToAdd == mFollowingObj) return;
+	if (transformToAdd == mFollowingObj) {
+		return;
+	}
+	if (transformToAdd->GetPosition().x == 0) {
+		return;
+	}
 	mTransformComponentList.push_back(transformToAdd);
 }
 

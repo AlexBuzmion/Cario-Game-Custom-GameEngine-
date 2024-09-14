@@ -44,7 +44,7 @@ PhysicsEngine& PhysicsEngine::GetInstance()
 
 void PhysicsEngine::SimulatePhysics(float deltaTime)
 {
-	Collide(deltaTime);
+	CheckCollisions(deltaTime);
 	Move(deltaTime);
 }
 
@@ -64,7 +64,7 @@ void PhysicsEngine::Move(float deltaTime)
 	}
 }
 
-void PhysicsEngine::Collide(float deltaTime)
+void PhysicsEngine::CheckCollisions(float deltaTime)
 {
 	for (std::weak_ptr<PhysicsComponent> physicsComponentIter : mPhysicsComponentList) {
 		for (std::weak_ptr<PhysicsComponent> otherphysicsComponentIter : mPhysicsComponentList) {
@@ -78,7 +78,7 @@ void PhysicsEngine::Collide(float deltaTime)
 			if (currentComponent == otherComponent) continue;
 			if (!currentComponent || !otherComponent) continue;
             
-			CollisionResult collisionData = currentComponent->CheckCollision(otherComponent);
+			CollisionResult collisionData = currentComponent->CheckCollision(otherComponent, deltaTime);
 
             if (collisionData.mCollisionSide != CollisionSide::None) {
                  //iterates over all the events and send the collision update
@@ -86,6 +86,7 @@ void PhysicsEngine::Collide(float deltaTime)
                     collisionEvent(collisionData, otherComponent->GetOwner());
                 }
 			}
+			
 		}
 	}
 }

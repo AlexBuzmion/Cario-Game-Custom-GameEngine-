@@ -9,6 +9,7 @@
 #include "Game/Public/Components/PhysicsComponents/CircleColliderComponent.h"
 #include "Game/Public/Components/RenderComponents/BoxRenderComponent.h"
 #include "Game/Public/Components/PhysicsComponents/BoxColliderComponent.h"
+#include "Game/Public/Components/RenderComponents/SpriteRenderComponent.h"
 
 // inherits from std::enable_shared_from_this<GameObject>
 // this allows for safely creating shared pointers to the GameObject itself, ensuring proper memory management
@@ -30,6 +31,8 @@ public:
 	// updates the GameObject every frame, allowing it to respond dynamically to changes in the game
 	virtual void Tick(float deltaTime);
 
+	virtual void SetIsGrounded(const bool& inGrounded);
+	virtual bool GetGrounded() const; 
 	// creates and adds a component of the specified type to the GameObject, following the Entity-Component-System (ECS) pattern for modular design
 	template<class ComponentType, typename... Args>
 	std::shared_ptr<ComponentType> AddComponentOfType(Args... arguments)
@@ -62,4 +65,5 @@ public:
 
 protected:
 	ComponentList mComponents; // holds all components attached to this GameObject, managing its behavior and state
+	bool mIsGrounded;
 };

@@ -14,7 +14,7 @@ public:
 	void UpdateWorldObjPos(exVector2 newPos); 
 
 	void FollowObject(std::shared_ptr<TransformComponent> objectToFollow);
-
+	void BoundaryObject(std::shared_ptr<TransformComponent> objectBounds);
 	void OnFollowObjectMoved(exVector2 newPosition);
 	void AddTransformComponent(std::shared_ptr<TransformComponent> transformToAdd);
 	void RemoveTransformComponent(std::shared_ptr<TransformComponent> transformToRemove);
@@ -28,6 +28,7 @@ private:
 	
 	static std::unique_ptr<CameraManager> sInstance; 
 	std::shared_ptr<TransformComponent> mFollowingObj; 
+	std::shared_ptr<TransformComponent> mBoundary;
 	int mScreenCenterX;
 
 	std::vector <std::weak_ptr<TransformComponent>> mTransformComponentList;

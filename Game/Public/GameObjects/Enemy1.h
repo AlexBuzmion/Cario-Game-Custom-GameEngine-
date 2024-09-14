@@ -4,12 +4,13 @@
 class Enemy1 : public GameObject
 {
 public:
-	Enemy1(); 
+	Enemy1() = delete; 
 	~Enemy1();
 	Enemy1(exVector2 inSpawnLoc, exColor inColor, bool inHasGravity, bool inIsStatic, exVector2 inPoint1, exVector2 inPoint2);
 
 	virtual void Tick(float deltaTime);
 	virtual void BeginPlay();
+	void OnCollisionDetected(CollisionResult inResults, std::weak_ptr<GameObject> otherObjectHit);
 
 private: 
 	std::shared_ptr<TransformComponent> mTransform; 
@@ -22,7 +23,7 @@ private:
 	exColor mColor; 
 	bool mHasGravity; 
 	bool mIsStatic; 
-
+	bool mIsGrounded;
 	exVector2 mDirection; 
 };
 

@@ -2,7 +2,7 @@
 #include "Game/Public/Component.h"
 #include "Engine/Public/EngineTypes.h"
 #include "Engine/Public/EngineInterface.h"
-
+#include <set>
 
 // To be used in box collision checks
 enum class CollisionSide
@@ -17,6 +17,7 @@ enum class CollisionSide
 struct CollisionResult {
 	CollisionSide mCollisionSide; 
 	exVector2 mHitPoint; 
+	float deltaTime;
 };
 
 typedef std::function<void(CollisionResult, std::weak_ptr<GameObject>)> OnCollisionEvent;
@@ -36,13 +37,14 @@ public:
 
 	void RegisterListener(OnCollisionEvent eventToAdd);
 	void UnregisterListener(OnCollisionEvent eventToRemove);
-	virtual CollisionResult CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent);
+	virtual CollisionResult CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent, float deltaTime);
 	virtual void Move(float deltaTime); // Todo: Implement Physics Engine and move to protected
 
 	exVector2 GetVelocity() const;
 	void SetVelocity(const exVector2& newVelocity );
 
 	virtual void RemoveFromComponentList(); 
+
 protected:
 	virtual void InitializeComponent() override; 
 	bool mIsStatic; 

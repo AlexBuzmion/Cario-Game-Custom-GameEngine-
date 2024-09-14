@@ -36,7 +36,8 @@ void PowerUpOne::Tick(float deltaTime)
 	if (mInitialSpawn) {
  		mPhysicsComponent->SetVelocity({ 1,0 });
 	}
-	
+
+	mIsGrounded = false;
 }
 
 void PowerUpOne::BeginPlay()
@@ -135,6 +136,9 @@ void PowerUpOne::OnCollisionDetected(CollisionResult inResult, std::weak_ptr<Gam
 			}
 			// if the collision point is past the length of the box, apply gravity
 			break;
+		case CollisionSide::None:
+			mIsGrounded = true;
+			break; 
 
 		default:
 			
@@ -142,9 +146,8 @@ void PowerUpOne::OnCollisionDetected(CollisionResult inResult, std::weak_ptr<Gam
 		}
 		return;
 	}
-	if (inResult.mCollisionSide == CollisionSide::None) {
+	else {
 		mIsGrounded = false;
-		return;
 	}
 }
 

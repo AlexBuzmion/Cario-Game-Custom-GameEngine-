@@ -13,14 +13,15 @@ public:
 	CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, float inRadius);
 	CircleColliderComponent(std::shared_ptr<GameObject> inOwner, bool inIsStatic, float inRadius, bool inHasGravity, exVector2 inVelocity);
 
+	void SetColliderRadius(const float& inRadius);
 	float GetColliderRadius() const; 
 protected:
 	virtual void InitializeComponent();
-	virtual CollisionResult CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent) override;
+	virtual CollisionResult CheckCollision(std::shared_ptr<PhysicsComponent> otherComponent, float deltaTime) override;
 
 private:
 	CollisionResult CircleCollisionCheck(std::shared_ptr<PhysicsComponent> otherCircle, CollisionResult inResultToReturn) const;
-	CollisionResult BoxCollisionCheck(std::shared_ptr<PhysicsComponent> otherBox, CollisionResult inResultToReturn) const;
+	CollisionResult BoxCollisionCheck(std::shared_ptr<PhysicsComponent> otherBox, CollisionResult inResultToReturn, float deltaTime) const;
 	std::shared_ptr<CircleLineRender> mCircleColliderRender;
 	float mRadius;
 };

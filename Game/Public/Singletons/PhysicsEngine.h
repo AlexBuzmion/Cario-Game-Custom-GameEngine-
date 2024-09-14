@@ -23,7 +23,7 @@ private:
 	PhysicsEngine();
 	
 	void Move(float deltaTime);
-	void Collide(float deltaTime);
+	void CheckCollisions(float deltaTime);
 
 	// unique pointer to the single instance of the RenderEngine
 	static std::unique_ptr<PhysicsEngine> sInstance;

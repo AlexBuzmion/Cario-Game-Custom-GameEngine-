@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Public\GameObjects\Enemy1.h" />
     <ClInclude Include="Game\Public\Singletons\CameraManager.h" />
     <ClInclude Include="Game\Public\Components\PhysicsComponents\BoxColliderComponent.h" />
     <ClInclude Include="Game\Public\GameObjects\Cube.h" />
@@ -165,8 +166,10 @@
     <ClInclude Include="Game\Public\Singletons\PhysicsEngine.h" />
     <ClInclude Include="Game\Public\Singletons\InputManager.h" />
     <ClInclude Include="Game\Public\GameObjects\PowerUpOne.h" />
+    <ClInclude Include="Game\Public\Components\RenderComponents\SpriteRenderComponent.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Private\GameObjects\Enemy1.cpp" />
     <ClCompile Include="Game\Private\Singletons\CameraManager.cpp" />
     <ClCompile Include="Game\Private\Components\PhysicsComponents\BoxColliderComponent.cpp" />
     <ClCompile Include="Game\Private\GameObjects\Cube.cpp" />
@@ -187,10 +190,14 @@
     <ClCompile Include="Game\Private\Components\RenderComponents\BoxLineRender.cpp" />
     <ClCompile Include="Game\Private\Components\RenderComponents\CircleLineRender.cpp" />
     <ClCompile Include="Game\Private\GameObjects\PowerUpOne.cpp" />
+    <ClCompile Include="Game\Private\Components\RenderComponents\SpriteRenderComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Resources\Play-Bold.ttf" />
     <Font Include="Resources\Play-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\mario.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
